@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug - Library & Detector Test</title>
+    <style>
+        body {
+            font-family: monospace;
+            background: #1a1a1a;
+            color: #00FF00;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .section {
+            background: #222;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #00FF00;
+            border-radius: 4px;
+        }
+        
+        .success {
+            color: #00FF00;
+        }
+        
+        .error {
+            color: #FF4444;
+        }
+        
+        .warning {
+            color: #FFFF00;
+        }
+        
+        button {
+            background: #00FF00;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background: #00DD00;
+        }
+        
+        pre {
+            background: #111;
+            padding: 10px;
+            overflow-x: auto;
+            border-radius: 4px;
+            border: 1px solid #444;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Debug Console</h1>
+    
+    <div class="section">
+        <h2>Library Status</h2>
+        <div id="libStatus"></div>
+    </div>
+    
+    <div class="section">
+        <h2>Detector Test</h2>
+        <button onclick="testDetector()">Test Pose Detector</button>
+        <div id="detectorStatus"></div>
+    </div>
+    
+    <div class="section">
+        <h2>Console Output</h2>
+        <pre id="console"></pre>
+    </div>
+
+    <!-- TensorFlow.js and Pose Detection -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection"></script>
+
+    <script>
+        const log = {
+            messages: [],
+            
+            add: function(msg, type = 'info') {
+                const timestamp = new Date().toLocaleTimeString();
+                const prefix = type === 'error' ? '❌' : type === 'success' ? '✅' : 'ℹ️';
+                this.messages.push(`[${timestamp}] ${prefix} ${msg}`);
+                this.display();
+            },
+            
+            display: function() {
+                document.getElementById('console').textContent = this.messages.join('\n');
+                document.getElementById('console').parentElement.scrollTop = document.getElementById('console').parentElement.scrollHeight;
+            }
+        };
+        
+        // Intercept console logs
+        const originalLog = console.log;
+        console.log = function(...args) {
+            originalLog(...args);
+            log.add(args.join(' '), 'info');
+        };
+        
+        const originalError = console.error;
+        console.error = function(...args) {
+            originalError(...args);
+            log.add(args.join(' '), 'error');
+        };
+        
+        async function checkLibraries() {
+            const status = document.getElementById('libStatus');
+            let html = '';
+            
+            // Check TensorFlow
+            if (window.tf) {
+                html += `<p class="success">✅ TensorFlow.js loaded (v${window.tf.version.tfjs})</p>`;
+                console.log(`TensorFlow.js version: ${window.tf.version.tfjs}`);
+            } else {
+                html += `<p class="error">❌ TensorFlow.js NOT loaded</p>`;
+                console.error('TensorFlow.js not found');
+            }
+            
+            // Check Pose Detection
+            if (window.poseDetection) {
+                html += `<p class="success">✅ Pose Detection library loaded</p>`;
+                console.log('Pose Detection library loaded');
+                
+                // List supported models
+                if (window.poseDetection.SupportedModels) {
+                    html += `<p class="warning">Supported models: ${Object.keys(window.poseDetection.SupportedModels).join(', ')}</p>`;
+                }
+            } else {
+                html += `<p class="error">❌ Pose Detection library NOT loaded</p>`;
+                console.error('Pose Detection library not found');
+            }
+            
+            status.innerHTML = html;
+        }
+        
+        async function testDetector() {
+            const status = document.getElementById('detectorStatus');
+            status.innerHTML = '<p class="warning">⏳ Initializing detector...</p>';
+            console.log('Starting detector initialization test...');
+            
+            try {
+                if (!window.poseDetection) {
+                    throw new Error('poseDetection not available');
+                }
+                
+                console.log('Creating detector with BlazePose...');
+                const detector = await poseDetection.createDetector(
+                    poseDetection.SupportedModels.BlazePose,
+                    {
+                        runtime: 'tfjs',
+                        enableSmoothing: true
+                    }
+                );
+                
+                status.innerHTML += `<p class="success">✅ Detector initialized successfully!</p>`;
+                console.log('✅ Detector created successfully');
+                
+                // Try to estimate a blank pose
+                console.log('Testing pose estimation...');
+                const canvas = document.createElement('canvas');
+                canvas.width = 640;
+                canvas.height = 480;
+                
+                const poses = await detector.estimatePoses(canvas);
+                console.log(`Pose estimation test: got ${poses.length} poses`);
+                
+                status.innerHTML += `<p class="success">✅ Pose estimation works!</p>`;
+                
+            } catch (error) {
+                status.innerHTML += `<p class="error">❌ Error: ${error.message}</p>`;
+                console.error('Detector test failed:', error);
+            }
+        }
+        
+        // Run on load
+        window.addEventListener('load', () => {
+            console.log('=== Debug Console Started ===');
+            checkLibraries();
+        });
+    </script>
+</body>
+</html>
