@@ -129,8 +129,17 @@
         <p>This tool is for educational purposes and should not replace professional medical advice.</p>
     </div>
 
-    <script src="./mediapipe-loader.js"></script>
-    <script>
+    <!-- MediaPipe Libraries from local files -->
+    <script src="./vision_bundle.mjs" type="module"></script>
+    
+    <script type="module">
+        // Import MediaPipe from local ESM bundle
+        import * as MediaPipe from './vision_bundle.mjs';
+        
+        // Expose to window so other scripts can access
+        window.FilesetResolver = MediaPipe.FilesetResolver;
+        window.PoseLandmarker = MediaPipe.PoseLandmarker;
+        
         const MODEL_URL = 'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task';
         const WASM_URL = './wasm';
 
@@ -145,16 +154,10 @@
         async function initMediaPipe() {
             try {
                 document.getElementById('statusValue').textContent = 'Loading model...';
-                console.log('MediaPipe available:', !!window.FilesetResolver, !!window.PoseLandmarker);
                 
-                if (!window.FilesetResolver || !window.PoseLandmarker) {
-                    throw new Error('MediaPipe libraries not available on window');
-                }
-                
-                console.log('MediaPipe loaded successfully');
-                const { FilesetResolver, PoseLandmarker } = window;
-                const filesetResolver = await FilesetResolver.forVisionTasks(WASM_URL);
-                poseDetector = await PoseLandmarker.createFromOptions(filesetResolver, {
+                console.log('Initializing PoseLandmarker...');
+                const filesetResolver = await window.FilesetResolver.forVisionTasks(WASM_URL);
+                poseDetector = await window.PoseLandmarker.createFromOptions(filesetResolver, {
                     baseOptions: { modelAssetPath: MODEL_URL },
                     runningMode: 'VIDEO',
                     numPoses: 1
@@ -173,21 +176,15 @@
                 document.getElementById('errorMessage').textContent = '❌ ' + error.message;
                 document.getElementById('errorMessage').classList.add('show');
             }
+        }
 
-        // Wait for MediaPipe to load
-        window.addEventListener('mediapipe-loaded', initMediaPipe);
-        window.addEventListener('mediapipe-error', () => {
-            document.getElementById('statusValue').textContent = 'Error';
-            document.getElementById('errorMessage').textContent = '❌ Failed to load MediaPipe library';
-            document.getElementById('errorMessage').classList.add('show');
-        });
+        // Initialize on window load
+        window.addEventListener('load', initMediaPipe);
 
-        // Fallback: try init after 2 seconds if not loaded
-        setTimeout(() => {
-            if (window.FilesetResolver && window.PoseLandmarker) {
-                initMediaPipe();
-            }
-        }, 2000);
+        // Expose functions to window for HTML onclick handlers
+        window.startCamera = startCamera;
+        window.stopCamera = stopCamera;
+        window.resetMetrics = resetMetrics;
 
         async function startCamera() {
             try {
