@@ -3,19 +3,30 @@
 // Finger-specific tracking, GPT rep goals, dual view, hand model
 // ============================================================
 
-// Load API key from environment - for local testing
-const API_KEY = typeof process !== 'undefined' && process.env.VITE_OPENAI_API_KEY 
-    ? process.env.VITE_OPENAI_API_KEY 
-    : (window.__ENV__ && window.__ENV__.VITE_OPENAI_API_KEY)
+// Load API key from environment or localStorage
+let API_KEY = (window.__ENV__ && window.__ENV__.VITE_OPENAI_API_KEY)
     ? window.__ENV__.VITE_OPENAI_API_KEY
-    : ''; // API key must be set in .env.local file
+    : (typeof process !== 'undefined' && process.env.VITE_OPENAI_API_KEY 
+        ? process.env.VITE_OPENAI_API_KEY 
+        : localStorage.getItem('OPENAI_API_KEY') || '');
+
+// Debug logging
+if (!API_KEY || API_KEY.trim() === '') {
+    console.warn('⚠️  No OpenAI API key found.');
+    console.log('To enable AI-powered session summaries, either:');
+    console.log('1. Add to .env.local: VITE_OPENAI_API_KEY=sk-proj-YOUR-KEY');
+    console.log('2. Or set in browser console: localStorage.setItem("OPENAI_API_KEY", "sk-proj-YOUR-KEY")');
+    console.log('3. Then refresh the page');
+} else {
+    console.log('✅ OpenAI API key loaded - AI summaries enabled');
+}
 
 const CONFIG = {
     modelComplexity: 1,
     maxHands: 2,
     minDetectionConfidence: 0.7,  // Increased from 0.5 for better tracking
     minTrackingConfidence: 0.7,   // Increased from 0.5 for better tracking
-    THUMB_OPPOSITION_DISTANCE_THRESHOLD: 0.035,  // Stricter - require actual touching, not just close
+    THUMB_OPPOSITION_DISTANCE_THRESHOLD: 0.05,  // Increased from 0.035 - easier to register touches
     MIN_FRAMES_HELD: 10,
     HOLD_TIME_TARGET: 1.0, // seconds to hold position
     FEEDBACK_COOLDOWN: 2000,
@@ -150,12 +161,22 @@ function calculateFingerSpacing(landmarks) {
 
 async function getGPTSessionSummary() {
     const sessionDuration = (Date.now() - state.sessionStartTime) / 1000;
+    const avgRepTime = state.repCount > 0 ? (sessionDuration / state.repCount).toFixed(1) : 0;
+    
+    // If no API key, provide local summary
+    if (!API_KEY || API_KEY.trim() === '') {
+        console.warn('No OpenAI API key set. Providing local summary.');
+        const localSummary = `SUMMARY: You completed ${state.repCount}/${state.repGoal} reps in ${sessionDuration.toFixed(1)} seconds (${avgRepTime}s per rep). Great effort!
+TIPS: Keep your wrist straight and avoid bending it, Maintain steady controlled movements between finger touches, Try to maintain consistent hold times for each touch`;
+        return localSummary;
+    }
+    
     const prompt = `The user just completed a hand osteoarthritis exercise session (thumb opposition - touching thumb to each finger tip).
 
 Session Stats:
 - Reps completed: ${state.repCount}/${state.repGoal}
 - Total duration: ${sessionDuration.toFixed(1)} seconds
-- Average rep time: ${(sessionDuration / state.repCount).toFixed(1)} seconds
+- Average rep time: ${avgRepTime} seconds
 - Hold times: ${state.holdTimes.map(t => t.toFixed(1)).join(', ')} seconds
 
 Please provide:
@@ -191,11 +212,17 @@ TIPS: [tip 1], [tip 2], [tip 3]`;
             return content;
         } else {
             console.error('GPT error:', response.status);
-            return null;
+            // Fallback to local summary on API error
+            const localSummary = `SUMMARY: You completed ${state.repCount}/${state.repGoal} reps in ${sessionDuration.toFixed(1)} seconds (${avgRepTime}s per rep). Great effort!
+TIPS: Keep your wrist straight and avoid bending it, Maintain steady controlled movements between finger touches, Try to maintain consistent hold times for each touch`;
+            return localSummary;
         }
     } catch (error) {
         console.error('GPT request failed:', error);
-        return null;
+        // Fallback to local summary on network error
+        const localSummary = `SUMMARY: You completed ${state.repCount}/${state.repGoal} reps in ${sessionDuration.toFixed(1)} seconds (${avgRepTime}s per rep). Great effort!
+TIPS: Keep your wrist straight and avoid bending it, Maintain steady controlled movements between finger touches, Try to maintain consistent hold times for each touch`;
+        return localSummary;
     }
 }
 
@@ -270,9 +297,10 @@ function drawHandSkeleton(results) {
         const endLm = landmarks[end];
 
         if (startLm && endLm) {
-            const x1 = startLm.x * canvas.width;
+            // Flip X coordinate for mirrored display
+            const x1 = (1 - startLm.x) * canvas.width;
             const y1 = startLm.y * canvas.height;
-            const x2 = endLm.x * canvas.width;
+            const x2 = (1 - endLm.x) * canvas.width;
             const y2 = endLm.y * canvas.height;
 
             ctx.beginPath();
@@ -286,7 +314,7 @@ function drawHandSkeleton(results) {
     ctx.fillStyle = '#FF0000';
     const targetFingerTip = FINGER_TIPS[state.currentTargetFinger];
     const lm = landmarks[targetFingerTip];
-    const x = lm.x * canvas.width;
+    const x = (1 - lm.x) * canvas.width;
     const y = lm.y * canvas.height;
     ctx.beginPath();
     ctx.arc(x, y, 8, 0, 2 * Math.PI);
@@ -295,7 +323,7 @@ function drawHandSkeleton(results) {
     // Also highlight thumb in orange
     ctx.fillStyle = '#FF6600';
     const thumbLm = landmarks[HAND_KEYPOINTS.THUMB_TIP];
-    const tx = thumbLm.x * canvas.width;
+    const tx = (1 - thumbLm.x) * canvas.width;
     const ty = thumbLm.y * canvas.height;
     ctx.beginPath();
     ctx.arc(tx, ty, 6, 0, 2 * Math.PI);
@@ -329,7 +357,8 @@ function drawHandModel() {
     ctx.fillStyle = '#FFFFFF';
     ctx.font = 'bold 16px Arial';
     ctx.textAlign = 'center';
-    ctx.fillText('Touch Sequence', w / 2, 25);
+    ctx.textBaseline = 'top';
+    ctx.fillText('Touch Sequence', w / 2, 15);
     
     // Draw wrist (palm area)
     ctx.fillStyle = '#FFB6C1';
@@ -382,13 +411,13 @@ function drawHandModel() {
         ctx.arc(currentFinger.x, currentFinger.y, w * 0.12, 0, 2 * Math.PI);
         ctx.stroke();
         
-        // Label with order number
-        ctx.fillStyle = '#FFFFFF';
-        ctx.font = 'bold 14px Arial';
+        // Label with order number - properly aligned
+        ctx.fillStyle = '#000000';
+        ctx.font = 'bold 12px Arial';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(currentFinger.name.toUpperCase(), currentFinger.x, currentFinger.y - 5);
-        ctx.fillText(`Rep #${state.repCount + 1}`, currentFinger.x, currentFinger.y + 15);
+        ctx.fillText(currentFinger.name.toUpperCase(), currentFinger.x, currentFinger.y - 8);
+        ctx.fillText(`Rep #${state.repCount + 1}`, currentFinger.x, currentFinger.y + 8);
     }
     
     // Draw completed fingers
@@ -454,6 +483,11 @@ function detectPosition(metrics) {
     const closedThreshold = CONFIG.THUMB_OPPOSITION_DISTANCE_THRESHOLD;
     const openThreshold = CONFIG.THUMB_OPPOSITION_DISTANCE_THRESHOLD * 3;
     const nearThreshold = CONFIG.THUMB_OPPOSITION_DISTANCE_THRESHOLD * 1.5; // Fingers close but not touching
+
+    // Debug: Log distance occasionally (every 30 frames)
+    if (state.frameCount % 30 === 0) {
+        console.log(`Distance: ${(distance * 100).toFixed(1)}% | Closed: ${(closedThreshold * 100).toFixed(1)}% | Position: ${state.currentPosition}`);
+    }
 
     if (distance < closedThreshold) {
         // True closed - touching
@@ -1115,6 +1149,16 @@ function stopExercise() {
 async function init() {
     console.log('Initializing app...');
 
+    // Check and inform about API key
+    if (!API_KEY || API_KEY.trim() === '') {
+        console.warn('⚠️  No OpenAI API key found. Using local summaries.');
+        console.log('To enable AI-powered session summaries, set your API key:');
+        console.log('localStorage.setItem("OPENAI_API_KEY", "sk-proj-YOUR-KEY-HERE")');
+        console.log('Then refresh the page.');
+    } else {
+        console.log('✅ OpenAI API key loaded');
+    }
+
     if (!window.Hands) {
         console.error('❌ MediaPipe Hands not loaded');
         document.getElementById('feedback').textContent = 'Error: MediaPipe not loaded. Refresh page.';
@@ -1145,7 +1189,11 @@ async function init() {
     // Load hand image
     loadHandImage();
 
-    document.getElementById('feedback').textContent = 'Ready! Click Start to begin.';
+    let feedbackText = 'Ready! Click Start to begin.';
+    if (!API_KEY || API_KEY.trim() === '') {
+        feedbackText += ' (Using local summaries - set API key in console for AI feedback)';
+    }
+    document.getElementById('feedback').textContent = feedbackText;
     drawHandModel(); // Draw initial model
     console.log('✅ App ready!');
 }
