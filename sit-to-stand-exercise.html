@@ -452,6 +452,7 @@
             let previousLandmarks = null;
             let currentConfidence = 0;
             let awaitingUserGesture = false;
+            let reconnecting = false;
 
             function cacheElements() {
                 videoElement = document.getElementById('sitStandVideo');
@@ -497,12 +498,24 @@
                     return;
                 }
 
+                if (reconnecting) return;
+                reconnecting = true;
+
                 try {
                     mediaStream = await navigator.mediaDevices.getUserMedia({
                         video: { width: 960, height: 540, facingMode: "user" },
                     });
 
                     videoElement.srcObject = mediaStream;
+
+                    mediaStream.getVideoTracks().forEach(track => {
+                        track.onended = () => {
+                            videoReady = false;
+                            mediaStream = null;
+                            updateStatus("Camera disconnected. Reconnecting...", "warning");
+                            setupCamera();
+                        };
+                    });
 
                     await new Promise((resolve) => {
                         const onReady = async () => {
@@ -530,6 +543,8 @@
                         }
                     });
 
+                    reconnecting = false;
+
                     videoElement.addEventListener('play', () => {
                         if (!videoReady) {
                             videoReady = true;
@@ -541,6 +556,7 @@
                 } catch (err) {
                     console.error("Camera setup error:", err);
                     updateStatus("Camera error: " + err.message + " - click Start to retry.", "error");
+                    reconnecting = false;
                 }
             }
 
