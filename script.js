@@ -1,24 +1,299 @@
-// Continue button navigates to conditions page
-document.querySelector('.continue-btn').addEventListener('click', function() {
-    window.location.href = 'conditions.html';
-});
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heal Motion AI - Personal AI Rehab Support</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="top-bar-left">
+            <a href="#">News & Contact</a>
+            <a href="#">Translate</a>
+        </div>
+        <div class="search-bar">
+            <input type="text" placeholder="Search...">
+            <button><i class="fas fa-search"></i></button>
+        </div>
+    </div>
 
-// Condition items click handler
-document.querySelectorAll('.condition-item').forEach(item => {
-    item.addEventListener('click', function() {
-        // Remove active class from all items
-        document.querySelectorAll('.condition-item').forEach(i => {
-            i.classList.remove('active');
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo-section">
+                <div class="logo-container">
+                    <svg class="heartbeat-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                        <polyline points="30,50 35,50 38,40 42,60 45,50 50,50 55,50 58,40 62,60 65,50 70,50" 
+                                  fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <div class="logo-text">
+                        <h1 class="logo">Heal Motion AI</h1>
+                        <p class="logo-tagline">Recovery Support</p>
+                    </div>
+                </div>
+            </div>
+            <nav class="nav">
+                <a href="#home">Home</a>
+                <a href="#how-it-works">How it works</a>
+                <a href="#providers">Providers</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h2>Personal AI Rehab Support Right at Home</h2>
+            <div class="features-row">
+                <div class="feature-item">
+                    <i class="fas fa-dumbbell"></i>
+                    <p>Personalized recovery exercises</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-video"></i>
+                    <p>Real-time motion correction</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-chart-line"></i>
+                    <p>Seamless health reporting</p>
+                </div>
+            </div>
+            <button class="continue-btn" onclick="window.location.href='conditions.html'">Click Here to Continue</button>
+        </div>
+    </section>
+
+    <!-- Learn More Section -->
+    <section class="learn-more" id="how-it-works">
+        <h3>How Heal Motion AI Works</h3>
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-icon">
+                    <i class="fas fa-user-check"></i>
+                </div>
+                <h4>Personalized Exercise</h4>
+                <p>AI-tailored recovery programs based on your specific condition and progress.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+                <h4>Exercise Plans</h4>
+                <p>Adaptive workout routines that adjust to your recovery timeline.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">
+                    <i class="fas fa-camera"></i>
+                </div>
+                <h4>Real-time Motion Guidance</h4>
+                <p>Live feedback on your form and technique to prevent injuries.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">
+                    <i class="fas fa-file-medical"></i>
+                </div>
+                <h4>Automatic Health Reports</h4>
+                <p>Detailed progress tracking shared with your healthcare team.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why We Designed It Section -->
+    <section class="why-section">
+        <h3>Why We Designed Heal Motion AI</h3>
+        <div class="why-content">
+            <div class="why-text">
+                <p>Recovery from surgery, injury, or managing long-term conditions shouldn't be a lonely journey. Many seniors lack access to affordable physiotherapy and struggle to maintain motivation during home recovery.</p>
+                <p>Heal Motion AI bridges this gap by providing expert-level rehabilitation support 24/7, powered by artificial intelligence and guided by real healthcare professionals. We're committed to helping you regain independence and confidence in your own home.</p>
+            </div>
+            <div class="why-image">
+                <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop" alt="Senior doing physical therapy">
+            </div>
+        </div>
+    </section>
+
+    <!-- Partners Section -->
+    <section class="partners" id="providers">
+        <h3>Trusted by Leading Healthcare Providers</h3>
+        <div class="partners-grid">
+            <div class="partner-logo">
+                <img src="https://images.unsplash.com/photo-1631217314655-e0999857eb0b?w=400&h=300&fit=crop" alt="Doctor with patient" class="hospital-logo">
+                <p class="partner-name">London Health Sciences Centre</p>
+            </div>
+            <div class="partner-logo">
+                <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=300&fit=crop" alt="Healthcare professionals" class="hospital-logo">
+                <p class="partner-name">St. Joseph's Hospital</p>
+            </div>
+            <div class="partner-logo">
+                <img src="https://images.unsplash.com/photo-1579154204601-01d430751ce0?w=400&h=300&fit=crop" alt="Patient care" class="hospital-logo">
+                <p class="partner-name">Victoria Hospital</p>
+            </div>
+            <div class="partner-logo">
+                <img src="https://images.unsplash.com/photo-1543269865-cbdf26effbad?w=400&h=300&fit=crop" alt="Medical team" class="hospital-logo">
+                <p class="partner-name">Parkwood Institute</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- City Graphic -->
+    <div class="city-graphic">
+        <div class="city-skyline">
+            <div class="cloud small"></div>
+            <div class="building size1">
+                <div class="window small"></div>
+                <div class="window small"></div>
+                <div class="window small"></div>
+                <div class="window small"></div>
+            </div>
+            <div class="building size3">
+                <div class="window medium"></div>
+                <div class="window medium"></div>
+                <div class="window medium"></div>
+                <div class="window medium"></div>
+                <div class="window medium"></div>
+                <div class="window medium"></div>
+            </div>
+            <div class="building size2">
+                <div class="window small"></div>
+                <div class="window small"></div>
+                <div class="window small"></div>
+            </div>
+            <div class="building size4">
+                <div class="window medium"></div>
+                <div class="window medium"></div>
+                <div class="window medium"></div>
+                <div class="window medium"></div>
+                <div class="window medium"></div>
+                <div class="window medium"></div>
+                <div class="window medium"></div>
+            </div>
+            <div class="building size1">
+                <div class="window small"></div>
+                <div class="window small"></div>
+            </div>
+            <div class="building size3">
+                <div class="window medium"></div>
+                <div class="window medium"></div>
+                <div class="window medium"></div>
+                <div class="window medium"></div>
+                <div class="window medium"></div>
+            </div>
+            <div class="building size2">
+                <div class="window small"></div>
+                <div class="window small"></div>
+                <div class="window small"></div>
+                <div class="window small"></div>
+            </div>
+            <div class="building size5">
+                <div class="window small"></div>
+                <div class="window small"></div>
+                <div class="window small"></div>
+            </div>
+            <div class="building size4">
+                <div class="window medium"></div>
+                <div class="window medium"></div>
+                <div class="window medium"></div>
+                <div class="window medium"></div>
+                <div class="window medium"></div>
+                <div class="window medium"></div>
+            </div>
+            <div class="building size3">
+                <div class="window medium"></div>
+                <div class="window medium"></div>
+                <div class="window medium"></div>
+                <div class="window medium"></div>
+            </div>
+            <div class="building size2">
+                <div class="window small"></div>
+                <div class="window small"></div>
+            </div>
+            <div class="building size6">
+                <div class="window medium"></div>
+                <div class="window medium"></div>
+                <div class="window medium"></div>
+                <div class="window medium"></div>
+                <div class="window medium"></div>
+            </div>
+            <div class="building size1">
+                <div class="window small"></div>
+                <div class="window small"></div>
+                <div class="window small"></div>
+            </div>
+            <div class="building size7">
+                <div class="window medium"></div>
+                <div class="window medium"></div>
+                <div class="window medium"></div>
+                <div class="window medium"></div>
+                <div class="window medium"></div>
+                <div class="window medium"></div>
+                <div class="window medium"></div>
+            </div>
+            <div class="cloud medium"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div>
+                <div class="footer-logo">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                        <polyline points="30,50 35,50 38,40 42,60 45,50 50,50 55,50 58,40 62,60 65,50 70,50" 
+                                  fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <div class="footer-logo-text">
+                        <h3>Heal Motion AI</h3>
+                        <p>Recovery Support</p>
+                    </div>
+                </div>
+                <p style="margin-top: 15px; font-size: 0.95rem; line-height: 1.6;">Providing expert-level rehabilitation support 24/7, powered by artificial intelligence and guided by real healthcare professionals.</p>
+            </div>
+            <div class="footer-contact">
+                <p>Contact Us</p>
+                <a href="tel:+14165551234">+1 (416) 555-1234</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Heal Motion AI. All rights reserved. Revolutionizing recovery, one step at a time.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    // Get all condition buttons
+    const conditionButtons = document.querySelectorAll('.condition-button');
+    
+    conditionButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const condition = this.getAttribute('data-condition');
+            handleConditionSelection(condition);
         });
-        // Add active class to clicked item
-        this.classList.add('active');
-        
-        const condition = this.dataset.condition;
-        console.log('Selected condition:', condition);
-        
-        // Navigate to condition page after 500ms
-        setTimeout(() => {
-            window.location.href = `condition.html?type=${condition}`;
-        }, 500);
     });
 });
+
+function handleConditionSelection(condition) {
+    // Map conditions to their respective exercise pages
+    const conditionMap = {
+        'arthritis': '../SitToStandAI/index.html',
+        'stroke': '../FacialExercisesAI/index.html',
+        'osteoporosis': '../BalanceTrainingAI/index.html',
+        'dementia': '../CognitiveGamesAI/index.html',
+        'hypertension': '../CardioExercisesAI/index.html',
+        'sarcopenia': '../ResistanceTrainingAI/index.html'
+    };
+    
+    const page = conditionMap[condition];
+    
+    if (page) {
+        // Redirect to the exercise page
+        window.location.href = page;
+    }
+}
+    </script>
+</body>
+</html>
