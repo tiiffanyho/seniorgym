@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arthritis Exercises - Heal Motion AI</title>
+    <title>Osteoporosis Exercises - Heal Motion AI</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        .arthritis-hero {
+        .recovery-hero {
             background: #2d9e5f;
             color: white;
             padding: 140px 20px;
@@ -16,7 +16,7 @@
             overflow: hidden;
         }
 
-        .arthritis-hero::before {
+        .recovery-hero::before {
             content: '';
             position: absolute;
             top: 0;
@@ -28,14 +28,14 @@
             transform: translate(150px, -100px);
         }
 
-        .arthritis-content {
+        .recovery-content {
             position: relative;
             z-index: 2;
             max-width: 1200px;
             margin: 0 auto;
         }
 
-        .arthritis-content h2 {
+        .recovery-content h2 {
             font-size: 3.5rem;
             margin-bottom: 1.5rem;
             font-weight: 600;
@@ -43,14 +43,14 @@
             letter-spacing: -0.5px;
         }
 
-        .arthritis-subtitle {
+        .recovery-subtitle {
             font-size: 1.2rem;
             margin-bottom: 4rem;
             font-weight: 400;
             opacity: 0.95;
         }
 
-        .motion-grid {
+        .exercise-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 45px;
@@ -59,7 +59,7 @@
             padding: 0 20px;
         }
 
-        .motion-button {
+        .exercise-button {
             background: white;
             color: #333;
             padding: 60px 40px;
@@ -79,7 +79,7 @@
             position: relative;
         }
 
-        .motion-button::before {
+        .exercise-button::before {
             content: '';
             position: absolute;
             top: 0;
@@ -90,36 +90,34 @@
             border-radius: 12px 12px 0 0;
         }
 
-        .motion-button:hover {
+        .exercise-button:hover {
             transform: translateY(-10px);
             box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
-            background: #f9f9f9;
         }
 
-        .motion-icon {
+        .exercise-icon {
             font-size: 5rem;
             color: #2d9e5f;
             transition: all 0.3s;
         }
 
-        .motion-button:hover .motion-icon {
-            transform: scale(1.15);
-            color: #45b373;
-        }
-
-        .motion-button h3 {
+        .exercise-button h3 {
             font-size: 1.8rem;
             margin: 0;
             font-weight: 600;
             color: #2d9e5f;
         }
 
-        .motion-description {
+        .exercise-description {
             font-size: 0.95rem;
             color: #666;
             font-weight: 400;
             line-height: 1.6;
             margin: 0;
+        }
+
+        .coming-soon {
+            display: none;
         }
 
         .back-button-container {
@@ -185,32 +183,34 @@
         </div>
     </header>
 
-    <!-- Arthritis Motion Selection Section -->
-    <section class="arthritis-hero">
-        <div class="arthritis-content">
+    <!-- Recovery Motion Selection Section -->
+    <section class="recovery-hero">
+        <div class="recovery-content">
             <div class="back-button-container">
                 <button class="back-button" onclick="window.location.href='conditions.html'">
                     <i class="fas fa-arrow-left"></i> Back to Conditions
                 </button>
             </div>
-            <h2>Arthritis Recovery</h2>
-            <p class="arthritis-subtitle">Choose your exercise type to begin your personalized motion guidance</p>
+            <h2>Osteoporosis</h2>
+            <p class="recovery-subtitle">Choose your exercise type to begin your personalized motion guidance</p>
             
-            <div class="motion-grid">
-                <button class="motion-button" onclick="goToMotion('hand-motion')">
-                    <div class="motion-icon">
-                        <i class="fas fa-hand-paper"></i>
+            <div class="exercise-grid">
+                <button class="exercise-button" onclick="window.location.href='coming-soon.html'">
+                    <div class="coming-soon">Coming Soon</div>
+                    <div class="exercise-icon">
+                        <i class="fas fa-dumbbell"></i>
                     </div>
-                    <h3>Do Hand Motion</h3>
-                    <p class="motion-description">Improve hand flexibility and reduce joint stiffness with guided hand exercises</p>
+                    <h3>Weight Bearing</h3>
+                    <p class="exercise-description">Build bone strength safely</p>
                 </button>
 
-                <button class="motion-button" onclick="goToMotion('sit-stand')">
-                    <div class="motion-icon">
-                        <i class="fas fa-person"></i>
+                <button class="exercise-button" onclick="window.location.href='coming-soon.html'">
+                    <div class="coming-soon">Coming Soon</div>
+                    <div class="exercise-icon">
+                        <i class="fas fa-person-hiking"></i>
                     </div>
-                    <h3>Do Sit or Stand</h3>
-                    <p class="motion-description">Build leg strength and practice safe transitions with sit-to-stand exercises</p>
+                    <h3>Balance Training</h3>
+                    <p class="exercise-description">Prevent falls and improve stability</p>
                 </button>
             </div>
         </div>
@@ -234,82 +234,6 @@
                 <div class="window medium"></div>
                 <div class="window medium"></div>
             </div>
-            <div class="building size2">
-                <div class="window small"></div>
-                <div class="window small"></div>
-                <div class="window small"></div>
-            </div>
-            <div class="building size4">
-                <div class="window medium"></div>
-                <div class="window medium"></div>
-                <div class="window medium"></div>
-                <div class="window medium"></div>
-                <div class="window medium"></div>
-                <div class="window medium"></div>
-                <div class="window medium"></div>
-            </div>
-            <div class="building size1">
-                <div class="window small"></div>
-                <div class="window small"></div>
-            </div>
-            <div class="building size3">
-                <div class="window medium"></div>
-                <div class="window medium"></div>
-                <div class="window medium"></div>
-                <div class="window medium"></div>
-                <div class="window medium"></div>
-            </div>
-            <div class="building size2">
-                <div class="window small"></div>
-                <div class="window small"></div>
-                <div class="window small"></div>
-                <div class="window small"></div>
-            </div>
-            <div class="building size5">
-                <div class="window small"></div>
-                <div class="window small"></div>
-                <div class="window small"></div>
-            </div>
-            <div class="building size4">
-                <div class="window medium"></div>
-                <div class="window medium"></div>
-                <div class="window medium"></div>
-                <div class="window medium"></div>
-                <div class="window medium"></div>
-                <div class="window medium"></div>
-            </div>
-            <div class="building size3">
-                <div class="window medium"></div>
-                <div class="window medium"></div>
-                <div class="window medium"></div>
-                <div class="window medium"></div>
-            </div>
-            <div class="building size2">
-                <div class="window small"></div>
-                <div class="window small"></div>
-            </div>
-            <div class="building size6">
-                <div class="window medium"></div>
-                <div class="window medium"></div>
-                <div class="window medium"></div>
-                <div class="window medium"></div>
-                <div class="window medium"></div>
-            </div>
-            <div class="building size1">
-                <div class="window small"></div>
-                <div class="window small"></div>
-                <div class="window small"></div>
-            </div>
-            <div class="building size7">
-                <div class="window medium"></div>
-                <div class="window medium"></div>
-                <div class="window medium"></div>
-                <div class="window medium"></div>
-                <div class="window medium"></div>
-                <div class="window medium"></div>
-                <div class="window medium"></div>
-            </div>
-            <div class="cloud medium"></div>
         </div>
     </div>
 
@@ -339,26 +263,5 @@
             <p>&copy; 2025 Heal Motion AI. All rights reserved. Revolutionizing recovery, one step at a time.</p>
         </div>
     </footer>
-
-<script>
-    function goToMotion(motion) {
-        console.log('Going to motion:', motion);
-        
-        const paths = {
-            'hand-motion': './sit-to-stand-ai/index.html',
-            'sit-stand': './sit-to-stand-exercise.html'
-        };
-        
-        const path = paths[motion];
-        console.log('Attempting to navigate to:', path);
-        
-        if (path) {
-            window.location.href = path;
-        } else {
-            console.error('No path found for motion:', motion);
-            alert('Exercise not found');
-        }
-    }
-</script>
 </body>
 </html>

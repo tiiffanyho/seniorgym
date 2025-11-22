@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coming Soon - Heal Motion AI</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .coming-soon-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 200px);
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .coming-soon-content {
+            max-width: 600px;
+        }
+
+        .coming-soon-icon {
+            font-size: 5rem;
+            color: #2d9e5f;
+            margin-bottom: 30px;
+        }
+
+        .coming-soon-container h2 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .coming-soon-container p {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 40px;
+            line-height: 1.8;
+        }
+
+        .back-home-btn {
+            background: #2d9e5f;
+            color: white;
+            border: none;
+            padding: 14px 40px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .back-home-btn:hover {
+            background: #1f7a46;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(45, 158, 95, 0.3);
+        }
+
+        .timeline {
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        .timeline h3 {
+            color: #2d9e5f;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .timeline-item {
+            display: inline-block;
+            margin: 0 15px;
+            text-align: center;
+        }
+
+        .timeline-item .timeline-icon {
+            font-size: 2.5rem;
+            color: #2d9e5f;
+            margin-bottom: 10px;
+        }
+
+        .timeline-item p {
+            font-size: 0.9rem;
+            color: #666;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="top-bar-left">
+            <a href="#">News & Contact</a>
+            <a href="#">Translate</a>
+        </div>
+        <div class="search-bar">
+            <input type="text" placeholder="Search...">
+            <button><i class="fas fa-search"></i></button>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo-section">
+                <div class="logo-container">
+                    <svg class="heartbeat-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                        <polyline points="30,50 35,50 38,40 42,60 45,50 50,50 55,50 58,40 62,60 65,50 70,50" 
+                                  fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <div class="logo-text">
+                        <h1 class="logo">Heal Motion AI</h1>
+                        <p class="logo-tagline">Recovery Support</p>
+                    </div>
+                </div>
+            </div>
+            <nav class="nav">
+                <a href="index.html">Home</a>
+                <a href="index.html#how-it-works">How it works</a>
+                <a href="index.html#providers">Providers</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Coming Soon Section -->
+    <div class="coming-soon-container">
+        <div class="coming-soon-content">
+            <div class="coming-soon-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+            <h2>Coming Soon!</h2>
+            <p>We're working hard to bring you this exercise program. This feature will be available very soon. Thank you for your patience!</p>
+            <button class="back-home-btn" onclick="window.location.href='conditions.html'">
+                <i class="fas fa-arrow-left"></i> Back to Conditions
+            </button>
+
+            <div class="timeline">
+                <h3>What's Coming</h3>
+                <div class="timeline-item">
+                    <div class="timeline-icon">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <p>Live Tracking</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <p>AI Coaching</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <p>Progress Reports</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div>
+                <div class="footer-logo">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                        <polyline points="30,50 35,50 38,40 42,60 45,50 50,50 55,50 58,40 62,60 65,50 70,50" 
+                                  fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <div class="footer-logo-text">
+                        <h3>Heal Motion AI</h3>
+                        <p>Recovery Support</p>
+                    </div>
+                </div>
+                <p style="margin-top: 15px; font-size: 0.95rem; line-height: 1.6;">Providing expert-level rehabilitation support 24/7, powered by artificial intelligence and guided by real healthcare professionals.</p>
+            </div>
+            <div class="footer-contact">
+                <p>Contact Us</p>
+                <a href="tel:+14165551234">+1 (416) 555-1234</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Heal Motion AI. All rights reserved. Revolutionizing recovery, one step at a time.</p>
+        </div>
+    </footer>
+</body>
+</html>

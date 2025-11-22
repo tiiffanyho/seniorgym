@@ -5,7 +5,9 @@
 You have **3 options** to set your API key:
 
 ### Option 1: `.env.local` File (Recommended) ✅
+
 Create a file named `.env.local` in the `sit-to-stand-ai/` directory with:
+
 ```
 VITE_OPENAI_API_KEY=sk-proj-YOUR-ACTUAL-KEY-HERE
 ```
@@ -15,19 +17,24 @@ VITE_OPENAI_API_KEY=sk-proj-YOUR-ACTUAL-KEY-HERE
 The app will automatically load this when you refresh the page.
 
 ### Option 2: Browser Console (Quick Test)
+
 1. Open your browser (Chrome/Safari/Firefox)
 2. Go to `http://localhost:8000`
 3. Open DevTools: **F12** or **Cmd+Option+J** (Mac)
 4. In the Console tab, paste:
+
 ```javascript
-localStorage.setItem('OPENAI_API_KEY', 'sk-proj-YOUR-ACTUAL-KEY-HERE')
-location.reload()
+localStorage.setItem("OPENAI_API_KEY", "sk-proj-YOUR-ACTUAL-KEY-HERE");
+location.reload();
 ```
+
 5. Replace `sk-proj-YOUR-ACTUAL-KEY-HERE` with your actual key
 6. Press Enter
 
 ### Option 3: Environment Variables
+
 If you're using a build system (Vite, etc.), set:
+
 ```
 VITE_OPENAI_API_KEY=sk-proj-YOUR-ACTUAL-KEY-HERE
 ```
@@ -51,6 +58,7 @@ VITE_OPENAI_API_KEY=sk-proj-YOUR-ACTUAL-KEY-HERE
 ## Current Status
 
 **File created:** ✅ `/Users/ethanzhang/Desktop/seniorgym/sit-to-stand-ai/.env.local`
+
 - Your API key is already in this file
 
 **App is ready:** ✅ Just refresh the page at `http://localhost:8000`

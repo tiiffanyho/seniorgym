@@ -60,7 +60,7 @@
                     <div class="condition-solution">Hand movements & sit-to-stand exercises to improve mobility</div>
                 </button>
 
-                <button class="condition-button" onclick="goToExercise('stroke')">
+                <button class="condition-button" onclick="window.location.href='stroke.html'">
                     <div class="condition-button-icon">
                         <i class="fas fa-brain"></i>
                     </div>
@@ -69,7 +69,7 @@
                     <div class="condition-solution">Face movements & coordination exercises for strength</div>
                 </button>
 
-                <button class="condition-button" onclick="goToExercise('osteoporosis')">
+                <button class="condition-button" onclick="window.location.href='osteoporosis.html'">
                     <div class="condition-button-icon">
                         <i class="fas fa-spine"></i>
                     </div>
@@ -78,7 +78,7 @@
                     <div class="condition-solution">Weight-bearing & balance exercises to strengthen bones</div>
                 </button>
 
-                <button class="condition-button" onclick="goToExercise('dementia')">
+                <button class="condition-button" onclick="window.location.href='dementia.html'">
                     <div class="condition-button-icon">
                         <i class="fas fa-head-side-virus"></i>
                     </div>
@@ -87,7 +87,7 @@
                     <div class="condition-solution">Cognitive games & gentle movements for mental engagement</div>
                 </button>
 
-                <button class="condition-button" onclick="goToExercise('hypertension')">
+                <button class="condition-button" onclick="window.location.href='hypertension.html'">
                     <div class="condition-button-icon">
                         <i class="fas fa-heart"></i>
                     </div>
@@ -96,7 +96,7 @@
                     <div class="condition-solution">Calming cardio & breathing exercises to manage pressure</div>
                 </button>
 
-                <button class="condition-button" onclick="goToExercise('sarcopenia')">
+                <button class="condition-button" onclick="window.location.href='sarcopenia.html'">
                     <div class="condition-button-icon">
                         <i class="fas fa-dumbbell"></i>
                     </div>
@@ -232,29 +232,6 @@
         </div>
     </footer>
 
-<script>
-    function goToExercise(condition) {
-        console.log('Going to exercise for:', condition);
-        
-        const paths = {
-            'arthritis': './arthritis.html',
-            'stroke': './facial-exercises-ai/index.html',
-            'osteoporosis': './balance-training-ai/index.html',
-            'dementia': './cognitive-games-ai/index.html',
-            'hypertension': './cardio-exercises-ai/index.html',
-            'sarcopenia': './resistance-training-ai/index.html'
-        };
-        
-        const path = paths[condition];
-        console.log('Attempting to navigate to:', path);
-        
-        if (path) {
-            window.location.href = path;
-        } else {
-            console.error('No path found for condition:', condition);
-            alert('Exercise not found');
-        }
-    }
-</script>
+
 </body>
 </html>
