@@ -581,25 +581,46 @@
             const reps = repCount;
             const repsPerMin = duration > 0 ? Math.round((reps / duration) * 60) : 0;
             const rangeOfMotion = Math.round(maxKneeAngle - minKneeAngle);
+            const avgKneeAngle = Math.round((maxKneeAngle + minKneeAngle) / 2);
             
-            const prompt = `You are a professional physical therapist. Based on the following sit-to-stand exercise data, generate a professional medical report:
+            const prompt = `You are a board-certified physical therapist and geriatric medicine specialist. Generate a detailed, professional medical report based on this sit-to-stand exercise assessment:
 
-Exercise Data:
-- Reps Completed: ${reps}
-- Duration: ${duration} seconds
-- Pace: ${repsPerMin} reps/minute
-- Maximum Knee Extension: ${Math.round(maxKneeAngle)}°
-- Minimum Knee Bend: ${Math.round(minKneeAngle)}°
-- Range of Motion: ${rangeOfMotion}°
+EXERCISE METRICS:
+- Repetitions Completed: ${reps} reps
+- Session Duration: ${duration} seconds
+- Repetition Pace: ${repsPerMin} reps/minute
+- Maximum Knee Angle (standing): ${Math.round(maxKneeAngle)}°
+- Minimum Knee Angle (sitting): ${Math.round(minKneeAngle)}°
+- Average Knee Angle: ${avgKneeAngle}°
+- Total Range of Motion: ${rangeOfMotion}°
 
-Please provide a professional report in HTML format that includes:
-1. Patient Assessment Summary (2-3 sentences about their performance)
-2. Range of Motion Analysis (comment on their flexibility and control)
-3. Performance Level (based on reps completed)
-4. Clinical Recommendations (3-4 specific recommendations for improvement)
-5. Safety Notes (if any concerns detected)
+Generate a comprehensive HTML medical report that includes:
 
-Use professional medical language but keep it understandable. Include specific numbers from the data. Format with <strong> tags for headers.`;
+1. <strong>CLINICAL IMPRESSION</strong> - 3-4 detailed sentences analyzing the patient's functional mobility and lower extremity strength based on the data. Comment on exercise tolerance and quality of movement.
+
+2. <strong>FINDINGS</strong>
+   - Range of Motion Assessment: Comment on knee flexion/extension ROM and how it compares to normal values (normal sit-to-stand ROM is typically 100-110°)
+   - Repetition Quality: Analyze consistency, pace, and endurance based on reps/minute
+   - Movement Efficiency: Comment on the exercise execution quality
+
+3. <strong>FUNCTIONAL ASSESSMENT</strong>
+   - Classify performance level (Excellent: 15+ reps, Good: 10-14, Fair: 5-9, Poor: <5)
+   - Lower extremity strength assessment
+   - Balance and stability inference
+
+4. <strong>CLINICAL RECOMMENDATIONS</strong>
+   - 3-4 specific exercises to complement sit-to-stand training
+   - Frequency and intensity recommendations
+   - Safety precautions specific to their performance level
+   - Progression pathway for improvement
+
+5. <strong>NOTES & PRECAUTIONS</strong>
+   - Any concerns based on movement pattern
+   - When to seek professional help
+   - Contraindications to monitor
+
+Format with HTML tags. Use medical terminology but ensure clarity. Include specific numeric values from the data. Be encouraging but realistic about fitness level.`;
+
 
             try {
                 // Use backend proxy to avoid CORS issues
@@ -633,46 +654,106 @@ Use professional medical language but keep it understandable. Include specific n
         }
 
         function generateFallbackReport(reps, duration, rangeOfMotion, repsPerMin) {
-            let performanceLevel = 'Beginner';
-            let assessment = 'Continue with consistent practice to build strength and endurance.';
+            let performanceLevel = 'Fair';
+            let clinicalImpression = 'Patient demonstrates developing lower extremity strength and functional mobility. Continue with consistent practice to build endurance and muscle control.';
+            let strengthAssessment = 'Developing';
+            let romComment = 'Adequate range of motion with room for improvement';
+            let recommendations = ['Practice daily with short sessions to build strength', 'Focus on controlled movements throughout the exercise', 'Gradually increase repetitions as comfort improves'];
             
             if (reps >= 15) {
-                performanceLevel = 'Advanced';
-                assessment = 'Excellent performance with strong muscle control and endurance demonstrated.';
+                performanceLevel = 'Excellent';
+                clinicalImpression = 'Patient demonstrates exceptional lower extremity strength and functional mobility. Exercise tolerance is excellent with consistent, controlled movement patterns observed throughout the session.';
+                strengthAssessment = 'Strong';
+                romComment = 'Excellent range of motion with good control throughout full movement';
+                recommendations = ['Maintain current exercise routine 3-4 times per week', 'Consider progressive resistance training to further build strength', 'Explore advanced functional activities'];
             } else if (reps >= 10) {
-                performanceLevel = 'Intermediate';
-                assessment = 'Good effort with solid execution. Continue building strength through regular practice.';
+                performanceLevel = 'Good';
+                clinicalImpression = 'Patient demonstrates solid lower extremity strength and functional mobility. Exercise execution is consistent with good movement control. Continue building strength through regular practice.';
+                strengthAssessment = 'Good';
+                romComment = 'Good range of motion with consistent control throughout movement';
+                recommendations = ['Continue practice 3-4 times per week', 'Focus on maintaining smooth, controlled movements', 'Gradually increase intensity or duration'];
             } else if (reps >= 5) {
-                performanceLevel = 'Beginner';
-                assessment = 'Good start. Focus on smooth, controlled movements and gradually increase repetitions.';
+                performanceLevel = 'Fair';
+                clinicalImpression = 'Patient demonstrates developing lower extremity strength and functional mobility. Good effort noted with solid execution. Continue with consistent practice to improve endurance.';
+                strengthAssessment = 'Developing';
+                romComment = 'Fair range of motion with developing control';
+                recommendations = ['Practice daily with short sessions', 'Focus on smooth, controlled movements', 'Gradually increase repetitions'];
             }
             
             return `
-                <strong>Physical Therapy Assessment Report</strong>
-                <br><br>
-                <strong>Patient Performance Summary:</strong>
-                <br>${assessment}
-                <br><br>
-                <strong>Range of Motion Analysis:</strong>
-                <br>• Knee Extension Range: ${rangeOfMotion}° (Normal range: 120-160°)
-                <br>• Movement Control: ${reps > 8 ? 'Good' : 'Developing'}
-                <br>• Motion Quality: Steady pace at ${repsPerMin} reps/minute
-                <br><br>
-                <strong>Performance Level:</strong>
-                <br>• Category: ${performanceLevel}
-                <br>• Reps Completed: ${reps}
-                <br>• Session Duration: ${duration} seconds
-                <br><br>
-                <strong>Clinical Recommendations:</strong>
-                <br>• Maintain steady, controlled movement throughout each repetition
-                <br>• Focus on full knee extension when standing position is reached
-                <br>• Control the descent gradually when sitting down
-                <br>• Practice ${reps > 10 ? '3-4 times per week' : 'daily with short sessions'} for optimal results
-                <br><br>
-                <strong>Safety Notes:</strong>
-                <br>• Stop if you experience pain or discomfort
-                <br>• Maintain proper posture throughout the exercise
-                <br>• Consult your physician before increasing intensity
+                <div style="font-family: Arial, sans-serif; max-width: 900px; margin: 0 auto; color: #333;">
+                    <div style="border-bottom: 3px solid #2d9e5f; padding-bottom: 15px; margin-bottom: 20px;">
+                        <h2 style="margin: 0; color: #2d9e5f;">SIT-TO-STAND EXERCISE ASSESSMENT REPORT</h2>
+                        <p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">Physical Therapy Functional Assessment</p>
+                    </div>
+
+                    <div style="background-color: #f9f9f9; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
+                        <h3 style="margin-top: 0; color: #2d9e5f;">CLINICAL IMPRESSION</h3>
+                        <p style="line-height: 1.6; margin: 0;">${clinicalImpression}</p>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="color: #2d9e5f; margin-bottom: 12px;">FINDINGS</h3>
+                        
+                        <div style="background-color: #f0f8f4; padding: 12px; border-left: 4px solid #2d9e5f; margin-bottom: 12px;">
+                            <strong>Range of Motion Assessment:</strong>
+                            <br>• Total knee range of motion: ${rangeOfMotion}° (Normal: 120-160°)
+                            <br>• Assessment: ${romComment}
+                            <br>• Symmetry: Bilateral knee movement observed
+                        </div>
+                        
+                        <div style="background-color: #f0f8f4; padding: 12px; border-left: 4px solid #2d9e5f; margin-bottom: 12px;">
+                            <strong>Repetition Quality & Endurance:</strong>
+                            <br>• Total repetitions: ${reps} reps
+                            <br>• Pace: ${repsPerMin} reps/minute
+                            <br>• Duration: ${duration} seconds
+                            <br>• Exercise consistency: ${reps > 8 ? 'Excellent' : reps > 5 ? 'Good' : 'Developing'}
+                        </div>
+                        
+                        <div style="background-color: #f0f8f4; padding: 12px; border-left: 4px solid #2d9e5f;">
+                            <strong>Lower Extremity Strength:</strong>
+                            <br>• Assessment Level: ${strengthAssessment}
+                            <br>• Functional Category: ${performanceLevel}
+                            <br>• Movement Control: ${reps > 12 ? 'Excellent control throughout full range' : reps > 8 ? 'Good control with minor variations' : 'Developing control with variable pace'}
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="color: #2d9e5f; margin-bottom: 12px;">FUNCTIONAL ASSESSMENT</h3>
+                        <div style="background-color: #f9f9f9; padding: 12px; border-radius: 6px;">
+                            <strong>Performance Classification:</strong> ${performanceLevel}
+                            <br><strong>Lower Extremity Strength:</strong> ${strengthAssessment}
+                            <br><strong>Functional Mobility Status:</strong> ${reps >= 10 ? 'Independent' : 'Developing Independence'}
+                            <br><strong>Stability & Balance:</strong> ${reps > 8 ? 'Stable throughout exercise' : 'Developing stability'}
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="color: #2d9e5f; margin-bottom: 12px;">CLINICAL RECOMMENDATIONS</h3>
+                        <ol style="line-height: 1.8; margin: 0; padding-left: 20px;">
+                            ${recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                            <li>Maintain proper posture: Keep chest upright, shoulders back</li>
+                            <li>Control descent: Move down slowly and deliberately</li>
+                            <li>Rest adequately between sessions: 1-2 minutes minimum</li>
+                        </ol>
+                    </div>
+
+                    <div style="background-color: #fff3cd; padding: 12px; border-left: 4px solid #ff9800; border-radius: 4px;">
+                        <h3 style="margin-top: 0; color: #ff9800;">SAFETY PRECAUTIONS & NOTES</h3>
+                        <ul style="margin: 0; padding-left: 20px; line-height: 1.6;">
+                            <li>Discontinue exercise if pain or significant discomfort occurs</li>
+                            <li>Ensure adequate lighting and clear space for safe movement</li>
+                            <li>Consider using chair with armrests for additional support if needed</li>
+                            <li>Consult healthcare provider before significantly increasing intensity</li>
+                            <li>Monitor for any balance issues or dizziness</li>
+                        </ul>
+                    </div>
+
+                    <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #ddd; font-size: 12px; color: #999;">
+                        <p style="margin: 0;">Report generated: ${new Date().toLocaleString()}</p>
+                        <p style="margin: 5px 0 0 0;">This assessment is based on functional exercise performance and should not replace professional medical evaluation.</p>
+                    </div>
+                </div>
             `;
         }
 
@@ -697,23 +778,186 @@ Use professional medical language but keep it understandable. Include specific n
 
         function downloadExerciseData() {
             const duration = Math.round((Date.now() - startTime) / 1000);
-            const data = {
-                timestamp: new Date().toISOString(),
-                exercise: 'Sit-to-Stand',
-                reps: repCount,
-                duration: duration + 's',
-                maxKneeAngle: Math.round(maxKneeAngle),
-                minKneeAngle: Math.round(minKneeAngle),
-                rangeOfMotion: Math.round(maxKneeAngle - minKneeAngle) + '°',
-                pace: duration > 0 ? Math.round((repCount / duration) * 60) + ' reps/min' : '0 reps/min'
-            };
+            const repsPerMin = duration > 0 ? Math.round((repCount / duration) * 60) : 0;
+            const rangeOfMotion = Math.round(maxKneeAngle - minKneeAngle);
+            const reportDate = new Date();
+            const dateStr = reportDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            const timeStr = reportDate.toLocaleTimeString('en-US');
             
-            const csvContent = Object.entries(data).map(([key, value]) => `${key},${value}`).join('\n');
-            const blob = new Blob([csvContent], { type: 'text/csv' });
+            // Get the current report text from the feedback box
+            const reportContent = document.getElementById('feedbackText').innerHTML || generateFallbackReport(repCount, duration, rangeOfMotion, repsPerMin);
+            
+            const htmlContent = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>SIT-TO-STAND Exercise Report</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            border-bottom: 3px solid #2d9e5f;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            color: #2d9e5f;
+            margin: 0 0 10px 0;
+            font-size: 28px;
+        }
+        .header p {
+            margin: 5px 0;
+            color: #666;
+        }
+        .report-metadata {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-left: 4px solid #2d9e5f;
+            margin-bottom: 30px;
+            border-radius: 4px;
+        }
+        .metadata-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+        }
+        .metadata-label {
+            font-weight: 600;
+            color: #2d9e5f;
+            min-width: 180px;
+        }
+        .report-body {
+            line-height: 1.8;
+        }
+        .section {
+            margin-bottom: 25px;
+        }
+        .section h3 {
+            color: #2d9e5f;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .metric-box {
+            background: #f0f8f4;
+            padding: 12px;
+            border-left: 3px solid #2d9e5f;
+            border-radius: 4px;
+        }
+        .metric-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+        .metric-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2d9e5f;
+        }
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+        }
+        @media print {
+            body {
+                background: none;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>SIT-TO-STAND EXERCISE ASSESSMENT</h1>
+            <p>Functional Mobility Report</p>
+        </div>
+        
+        <div class="report-metadata">
+            <div class="metadata-row">
+                <span class="metadata-label">Date:</span>
+                <span>${dateStr}</span>
+            </div>
+            <div class="metadata-row">
+                <span class="metadata-label">Time:</span>
+                <span>${timeStr}</span>
+            </div>
+            <div class="metadata-row">
+                <span class="metadata-label">Exercise Type:</span>
+                <span>Sit-to-Stand Repetitions</span>
+            </div>
+        </div>
+        
+        <div class="metrics-grid">
+            <div class="metric-box">
+                <div class="metric-label">Repetitions</div>
+                <div class="metric-value">${repCount}</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-label">Duration</div>
+                <div class="metric-value">${duration}s</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-label">Pace</div>
+                <div class="metric-value">${repsPerMin} /min</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-label">ROM</div>
+                <div class="metric-value">${rangeOfMotion}°</div>
+            </div>
+        </div>
+        
+        <div class="report-body section">
+            ${reportContent}
+        </div>
+        
+        <div class="footer">
+            <p><strong>IMPORTANT DISCLAIMER:</strong></p>
+            <p>This report is generated based on exercise performance tracking and is for informational purposes only. It should not be considered a substitute for professional medical evaluation or advice. Always consult with a healthcare provider before beginning any new exercise program or if you experience pain or discomfort.</p>
+            <p>Report ID: ${Date.now()} | Generated by SeniorGym Exercise Tracker</p>
+        </div>
+    </div>
+</body>
+</html>
+            `;
+            
+            const blob = new Blob([htmlContent], { type: 'text/html' });
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `sit-stand-report-${Date.now()}.csv`;
+            a.download = `SIT-TO-STAND-Report-${dateStr.replace(/\s/g, '-')}.html`;
             document.body.appendChild(a);
             a.click();
             window.URL.revokeObjectURL(url);
