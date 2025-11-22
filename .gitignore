@@ -1,0 +1,19 @@
+# Ignore API key files and secrets
+*.env
+.env*
+.env.local
+api_key.txt
+openai_key.txt
+secrets.js
+# Ignore node_modules and build artifacts
+node_modules/
+dist/
+build/
+# Ignore OS and editor files
+.DS_Store
+.vscode/
+# Ignore video and media files
+videos/
+*.mp4
+*.mov
+*.avi

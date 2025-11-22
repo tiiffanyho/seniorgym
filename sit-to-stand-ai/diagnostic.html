@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webcam Diagnostic Tool</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        .diagnostic {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .status {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        .status.pending {
+            background: #fef3c7;
+            border-left: 4px solid #fbbf24;
+            color: #92400e;
+        }
+        
+        .status.success {
+            background: #d1fae5;
+            border-left: 4px solid #10b981;
+            color: #065f46;
+        }
+        
+        .status.error {
+            background: #fee2e2;
+            border-left: 4px solid #ef4444;
+            color: #7f1d1d;
+        }
+        
+        .status.info {
+            background: #dbeafe;
+            border-left: 4px solid #3b82f6;
+            color: #1e3a8a;
+        }
+        
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        
+        button:hover {
+            background: #2563eb;
+        }
+        
+        .video-preview {
+            width: 100%;
+            max-width: 400px;
+            margin: 20px 0;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        code {
+            background: #f3f4f6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .fix-list {
+            background: #fef3c7;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #f59e0b;
+        }
+        
+        .fix-list h3 {
+            margin-top: 0;
+            color: #92400e;
+        }
+        
+        .fix-list li {
+            margin: 10px 0;
+            color: #78350f;
+        }
+    </style>
+</head>
+<body>
+    <div class="diagnostic">
+        <h1>🔍 Webcam Diagnostic Tool</h1>
+        <p>This tool will help identify why your webcam isn't working.</p>
+        
+        <button onclick="runDiagnostics()">🚀 Run Full Diagnostic</button>
+        
+        <div id="results"></div>
+        
+        <h2 style="margin-top: 30px;">Test Video Preview</h2>
+        <button onclick="testWebcam()">Test Webcam Access</button>
+        <video id="testVideo" class="video-preview" autoplay playsinline></video>
+        
+        <h2 style="margin-top: 30px;">Browser Info</h2>
+        <div id="browserInfo"></div>
+    </div>
+    
+    <script>
+        const results = document.getElementById('results');
+        
+        function addStatus(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `status ${type}`;
+            div.textContent = message;
+            results.appendChild(div);
+        }
+        
+        function clearResults() {
+            results.innerHTML = '';
+        }
+        
+        async function runDiagnostics() {
+            clearResults();
+            addStatus('Starting diagnostics...', 'pending');
+            
+            // 1. Check if HTTPS or localhost
+            addStatus(`📍 Protocol: ${window.location.protocol}`, 'info');
+            if (window.location.protocol === 'file:') {
+                addStatus('⚠️ ERROR: You\'re using file:// protocol. This blocks webcam access!', 'error');
+                addStatus('✅ FIX: Use a local server (http://localhost:8000)', 'info');
+            } else if (window.location.protocol === 'http:' && !window.location.hostname.includes('localhost')) {
+                addStatus('⚠️ WARNING: Non-HTTPS HTTP may block webcam on some browsers', 'pending');
+            }
+            
+            // 2. Check browser APIs
+            addStatus(`✓ Navigator object available: ${!!navigator}`, navigator ? 'success' : 'error');
+            addStatus(`✓ mediaDevices available: ${!!navigator.mediaDevices}`, navigator.mediaDevices ? 'success' : 'error');
+            addStatus(`✓ getUserMedia available: ${!!navigator.mediaDevices?.getUserMedia}`, navigator.mediaDevices?.getUserMedia ? 'success' : 'error');
+            
+            // 3. Check permissions
+            try {
+                const permissions = await navigator.permissions.query({ name: 'camera' });
+                addStatus(`📹 Camera permission status: ${permissions.state}`, 
+                    permissions.state === 'granted' ? 'success' : 
+                    permissions.state === 'denied' ? 'error' : 'pending');
+                
+                if (permissions.state === 'denied') {
+                    addStatus('✅ FIX: Reset camera permissions in browser settings', 'info');
+                }
+            } catch (e) {
+                addStatus(`⚠️ Could not check permissions: ${e.message}`, 'pending');
+            }
+            
+            // 4. Try to enumerate devices
+            try {
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                const videoDevices = devices.filter(d => d.kind === 'videoinput');
+                
+                if (videoDevices.length > 0) {
+                    addStatus(`✓ Found ${videoDevices.length} camera(s):`, 'success');
+                    videoDevices.forEach(d => {
+                        addStatus(`  - ${d.label || 'Unknown camera'}`, 'success');
+                    });
+                } else {
+                    addStatus('❌ No camera devices found!', 'error');
+                    addStatus('✅ FIX: Check if camera is connected or not disabled in BIOS/system settings', 'info');
+                }
+            } catch (e) {
+                addStatus(`❌ Error checking devices: ${e.message}`, 'error');
+            }
+            
+            // 5. Try actual webcam access (non-intrusive)
+            addStatus('', 'info');
+            addStatus('Testing actual webcam access...', 'pending');
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { width: { ideal: 640 }, height: { ideal: 480 } },
+                    audio: false
+                });
+                addStatus('✓ Successfully accessed webcam!', 'success');
+                
+                // Clean up
+                stream.getTracks().forEach(track => track.stop());
+            } catch (e) {
+                addStatus(`❌ Failed to access webcam: ${e.name}`, 'error');
+                addStatus(`   Message: ${e.message}`, 'error');
+                
+                // Provide specific fixes
+                showWebcamErrorFix(e.name);
+            }
+            
+            addStatus('', 'info');
+            addStatus('Diagnostic complete!', 'success');
+        }
+        
+        function showWebcamErrorFix(errorName) {
+            const fixes = {
+                'NotAllowedError': 'Camera permission was denied. Check browser settings or click "Reset Permissions".',
+                'NotFoundError': 'No camera found. Check if it\'s connected and not disabled.',
+                'NotReadableError': 'Camera is being used by another app. Close other apps and try again.',
+                'AbortError': 'Camera access was aborted. Try reloading the page.',
+                'PermissionDeniedError': 'Camera permission denied by system. Check OS camera permissions.',
+                'SecurityError': 'Camera access blocked for security reasons. Use HTTPS or localhost.',
+            };
+            
+            const fix = fixes[errorName] || 'Unknown error. Try the steps below.';
+            addStatus(`Fix: ${fix}`, 'pending');
+        }
+        
+        async function testWebcam() {
+            const video = document.getElementById('testVideo');
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { width: { ideal: 640 }, height: { ideal: 480 } },
+                    audio: false
+                });
+                
+                video.srcObject = stream;
+                video.style.display = 'block';
+                addStatus('✓ Webcam test successful! Video preview is showing above.', 'success');
+            } catch (e) {
+                addStatus(`❌ Webcam test failed: ${e.name} - ${e.message}`, 'error');
+                showWebcamErrorFix(e.name);
+            }
+        }
+        
+        function displayBrowserInfo() {
+            const info = document.getElementById('browserInfo');
+            info.innerHTML = `
+                <div class="status info">
+                    <strong>Browser:</strong> ${navigator.userAgent.split(' ').pop()}<br>
+                    <strong>Platform:</strong> ${navigator.platform}<br>
+                    <strong>URL:</strong> ${window.location.href}<br>
+                    <strong>Secure (HTTPS):</strong> ${window.location.protocol === 'https:' ? '✓ Yes' : '✗ No'}<br>
+                    <strong>Localhost:</strong> ${window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '✓ Yes' : '✗ No'}
+                </div>
+            `;
+        }
+        
+        // Run on load
+        window.addEventListener('DOMContentLoaded', () => {
+            displayBrowserInfo();
+            addStatus('Ready! Click "Run Full Diagnostic" to test your setup.', 'info');
+        });
+    </script>
+</body>
+</html>
