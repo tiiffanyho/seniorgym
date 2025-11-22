@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Your Condition - Heal Motion AI</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Garamond:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* Conditions List Layout */
+        .conditions-list {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .condition-item {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 2px solid transparent;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .condition-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            border-color: #6b46c1;
+        }
+
+        .condition-item.active {
+            background: #6b46c1;
+            color: white;
+            border-color: #6b46c1;
+        }
+
+        .condition-item.active .condition-icon {
+            color: white;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .condition-item.active h4,
+        .condition-item.active p {
+            color: white;
+        }
+
+        .condition-item.active .condition-check {
+            color: white;
+            display: flex;
+        }
+
+        .condition-left {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .condition-icon {
+            font-size: 2.5rem;
+            color: #6b46c1;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f3e8ff;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .condition-text h4 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            color: #2c3e50;
+            font-weight: 400;
+        }
+
+        .condition-text p {
+            color: #555;
+            font-size: 0.9rem;
+            font-weight: 400;
+        }
+
+        .condition-check {
+            font-size: 1.5rem;
+            color: #ddd;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo-section">
+                <svg class="heartbeat-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <polyline points="10,50 20,50 25,35 30,65 35,45 45,50 50,50 55,50 60,35 65,65 70,45 80,50 90,50" 
+                              fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <h1 class="logo">Heal Motion AI</h1>
+            </div>
+            <nav class="nav">
+                <a href="index.html">Home</a>
+                <a href="index.html#how-it-works">How it works</a>
+                <a href="index.html#providers">Providers</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Conditions Section -->
+    <section class="conditions">
+        <div class="container">
+            <h3>Select Your Condition</h3>
+            <p class="conditions-subtitle">Choose the condition you need support with, and we'll tailor your recovery plan</p>
+            
+            <div class="conditions-list">
+                <div class="condition-item" data-condition="arthritis">
+                    <div class="condition-left">
+                        <div class="condition-icon">
+                            <i class="fas fa-bone"></i>
+                        </div>
+                        <div class="condition-text">
+                            <h4>Arthritis</h4>
+                            <p>Joint pain and mobility exercises</p>
+                        </div>
+                    </div>
+                    <div class="condition-check">
+                        <i class="fas fa-check"></i>
+                    </div>
+                </div>
+
+                <div class="condition-item" data-condition="stroke">
+                    <div class="condition-left">
+                        <div class="condition-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div class="condition-text">
+                            <h4>Stroke Recovery</h4>
+                            <p>Mobility and strength rehabilitation</p>
+                        </div>
+                    </div>
+                    <div class="condition-check">
+                        <i class="fas fa-check"></i>
+                    </div>
+                </div>
+
+                <div class="condition-item" data-condition="osteoporosis">
+                    <div class="condition-left">
+                        <div class="condition-icon">
+                            <i class="fas fa-spine"></i>
+                        </div>
+                        <div class="condition-text">
+                            <h4>Osteoporosis</h4>
+                            <p>Bone strengthening exercises</p>
+                        </div>
+                    </div>
+                    <div class="condition-check">
+                        <i class="fas fa-check"></i>
+                    </div>
+                </div>
+
+                <div class="condition-item" data-condition="dementia">
+                    <div class="condition-left">
+                        <div class="condition-icon">
+                            <i class="fas fa-head-side-virus"></i>
+                        </div>
+                        <div class="condition-text">
+                            <h4>Dementia</h4>
+                            <p>Cognitive and physical engagement</p>
+                        </div>
+                    </div>
+                    <div class="condition-check">
+                        <i class="fas fa-check"></i>
+                    </div>
+                </div>
+
+                <div class="condition-item" data-condition="hypertension">
+                    <div class="condition-left">
+                        <div class="condition-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="condition-text">
+                            <h4>Hypertension</h4>
+                            <p>Cardiovascular health management</p>
+                        </div>
+                    </div>
+                    <div class="condition-check">
+                        <i class="fas fa-check"></i>
+                    </div>
+                </div>
+
+                <div class="condition-item" data-condition="sarcopenia">
+                    <div class="condition-left">
+                        <div class="condition-icon">
+                            <i class="fas fa-dumbbell"></i>
+                        </div>
+                        <div class="condition-text">
+                            <h4>Sarcopenia</h4>
+                            <p>Muscle building and strength training</p>
+                        </div>
+                    </div>
+                    <div class="condition-check">
+                        <i class="fas fa-check"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 Heal Motion AI. Revolutionizing recovery, one step at a time.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
