@@ -19,6 +19,9 @@
     let currentConfidence = 0;
     let awaitingUserGesture = false;
     let reconnecting = false;
+    let voiceEnabled = true;
+    let lastSpokenFeedback = "";
+    let lastSpokenStatus = "";
 
     function cacheElements() {
         videoElement = document.getElementById('sitStandVideo');
@@ -28,6 +31,19 @@
             videoElement.playsInline = true;
             videoElement.autoplay = true;
         }
+    }
+
+    function speak(text) {
+        if (!voiceEnabled || !('speechSynthesis' in window) || !text) return;
+        if (text === lastSpokenFeedback || text === lastSpokenStatus) return;
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 0.95;
+        utterance.pitch = 1.0;
+        utterance.volume = 1.0;
+        window.speechSynthesis.speak(utterance);
+        lastSpokenFeedback = text;
+        lastSpokenStatus = text;
     }
 
     async function init() {
@@ -46,10 +62,12 @@
             });
 
             updateStatus("Model loaded. Starting camera...", "good");
+            speak("Model loaded. Starting the camera.");
             await setupCamera();
         } catch (err) {
             console.error("Initialization error:", err);
             updateStatus("Error: " + err.message, "error");
+            speak("There was a problem loading the model. Please refresh and try again.");
         }
     }
 
@@ -134,6 +152,7 @@
             videoReady = true;
             awaitingUserGesture = false;
             updateStatus("Camera ready. Center yourself in the frame.", "good");
+            speak("Camera ready. Center yourself in the frame.");
             requestAnimationFrame(detectPose);
             return true;
         } catch (err) {
@@ -150,11 +169,17 @@
         if (indicator) {
             indicator.className = 'status-indicator ' + (tone === 'error' ? 'error' : tone === 'warning' ? 'warning' : '');
         }
+        if (text && text !== lastSpokenStatus && tone !== 'default') {
+            speak(text);
+        }
     }
 
     function updateFeedback(text) {
         const box = document.getElementById('feedbackText');
         if (box) box.textContent = text;
+        if (text && text !== lastSpokenFeedback && voiceEnabled) {
+            speak(text);
+        }
     }
 
     function distance3D(a, b) {
@@ -247,13 +272,13 @@
                 if (rightEl) rightEl.textContent = Math.round(rightKnee);
 
                 if (asymmetry > ASYMMETRY_THRESHOLD) {
-                    updateFeedback("⚠ Your knees are uneven. Try to move them together symmetrically.");
+                    updateFeedback("Your knees are uneven. Try to move them together symmetrically.");
                 } else if (avgKnee < ARTHRITIS_MIN_FLEXION) {
-                    updateFeedback("Try to bend your knees a bit more. Aim for 90-110 degrees.");
+                    updateFeedback("Bend your knees a bit more. Aim for ninety to one ten degrees.");
                 } else if (avgKnee > ARTHRITIS_MAX_FLEXION + 20) {
-                    updateFeedback("You're bending too far. This may stress your joints. Stay above 90 degrees.");
+                    updateFeedback("You are bending too far. This may stress your joints. Stay above ninety degrees.");
                 } else if (avgKnee >= ARTHRITIS_MIN_FLEXION && avgKnee <= ARTHRITIS_MAX_FLEXION) {
-                    updateFeedback("✓ Excellent! Your knee angle is in the safe range for arthritis.");
+                    updateFeedback("Excellent! Your knee angle is in the safe range for arthritis.");
                 } else {
                     updateFeedback("Good form. Keep moving steadily and maintain balance.");
                 }
@@ -358,6 +383,7 @@
 
         updateStatus("Recording started. Perform slow, controlled movements.", "good");
         updateFeedback("Start your sit-to-stand motion. Move slowly and steadily.");
+        speak("Recording started. Perform slow, controlled movements.");
     }
 
     function stopExercise() {
@@ -372,17 +398,31 @@
         const duration = Math.round((Date.now() - startTime) / 1000);
         updateStatus(`Recording stopped. Completed ${repCount} reps in ${duration} seconds.`, "good");
         updateFeedback(`✓ Great job! You completed ${repCount} repetitions. Great form and controlled movement!`);
+        speak(`Recording stopped. You completed ${repCount} repetitions in ${duration} seconds.`);
     }
 
     function bindControls() {
         const startBtn = document.getElementById('sitStandStartBtn');
         const stopBtn = document.getElementById('sitStandStopBtn');
         const backBtn = document.getElementById('sitStandBackBtn');
+        const voiceToggle = document.getElementById('voiceToggle');
+        const voiceStatus = document.getElementById('voiceStatus');
 
         startBtn?.addEventListener('click', startExercise);
         stopBtn?.addEventListener('click', stopExercise);
         videoElement?.addEventListener('click', ensureCameraPlaying);
         backBtn?.addEventListener('click', () => window.history.back());
+        voiceToggle?.addEventListener('change', (e) => {
+            const target = e.target;
+            const checked = target && typeof target.checked === 'boolean' ? target.checked : voiceEnabled;
+            voiceEnabled = checked;
+            if (voiceStatus) {
+                voiceStatus.textContent = voiceEnabled ? 'Voice coach is on.' : 'Voice coach is off.';
+            }
+            if (!voiceEnabled && 'speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+            }
+        });
     }
 
     window.addEventListener('load', () => {
