@@ -1,0 +1,20 @@
+{
+  "name": "web-project",
+  "version": "1.0.0",
+  "description": "A web project aimed at providing assistance and resources for elderly individuals.",
+  "main": "src/js/script.js",
+  "scripts": {
+    "start": "live-server src"
+  },
+  "keywords": [
+    "elderly",
+    "assistance",
+    "resources"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "live-server": "^1.2.1"
+  }
+}
