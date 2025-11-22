@@ -387,7 +387,7 @@
             </div>
 
             <div class="controls">
-                <button class="btn btn-primary" id="startBtn" onclick="startCamera()">
+                <button class="btn btn-primary" id="startBtn" onclick="startCamera()" disabled>
                     <i class="fas fa-camera"></i> Start Camera
                 </button>
                 <button class="btn btn-secondary" id="stopBtn" onclick="stopCamera()" disabled>
@@ -447,6 +447,12 @@
             <div class="feedback-box">
                 <strong><i class="fas fa-lightbulb"></i> Tip:</strong> Camera permissions required. Allow when prompted.
             </div>
+            
+            <div class="feedback-box" style="background: #e3f2fd; border-color: #2196f3; color: #1565c0; margin-top: 10px;">
+                <strong><i class="fas fa-server"></i> Important:</strong> If opening from file://, MediaPipe won't load due to CORS. 
+                Run a local server: <code style="background: rgba(0,0,0,0.1); padding: 2px 6px; border-radius: 3px;">python -m http.server 8000</code> 
+                then open <code style="background: rgba(0,0,0,0.1); padding: 2px 6px; border-radius: 3px;">http://localhost:8000/sit-to-stand-exercise.html</code>
+            </div>
         </div>
     </div>
 
@@ -455,7 +461,151 @@
         <p>This tool is for educational purposes and should not replace professional medical advice.</p>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/vision_bundle.js"></script>
+    <!-- Load MediaPipe Pose using Solutions API (more stable than Tasks API) -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
+    
+    <script>
+        // Wait for MediaPipe Pose to load
+        (function() {
+            function checkMediaPipe() {
+                if (window.Pose) {
+                    console.log('✓ MediaPipe Pose loaded');
+                    window.mediaPipePose = window.Pose;
+                    window.dispatchEvent(new CustomEvent('mediapipe-loaded'));
+                    return true;
+                }
+                return false;
+            }
+            
+            // Check immediately
+            if (!checkMediaPipe()) {
+                // Check periodically
+                const interval = setInterval(() => {
+                    if (checkMediaPipe()) {
+                        clearInterval(interval);
+                    }
+                }, 100);
+                
+                // Timeout after 10 seconds
+                setTimeout(() => {
+                    clearInterval(interval);
+                    if (!window.mediaPipePose) {
+                        console.error('❌ MediaPipe Pose failed to load');
+                        window.dispatchEvent(new CustomEvent('mediapipe-error', { 
+                            detail: new Error('MediaPipe Pose script failed to load') 
+                        }));
+                    }
+                }, 10000);
+            }
+        })();
+    </script>
+    
+    <script>
+        // Wait for script to load and check what it exposes
+        (function() {
+            let checkCount = 0;
+            const maxChecks = 50;
+            
+            function checkMediaPipe() {
+                checkCount++;
+                console.log(`Checking for MediaPipe (attempt ${checkCount})...`);
+                
+                // Check all possible locations
+                if (window.vision) {
+                    console.log('✓ Found window.vision:', window.vision);
+                    return true;
+                }
+                
+                // Check for MediaPipeTasks namespace
+                if (window.MediaPipeTasks) {
+                    console.log('✓ Found window.MediaPipeTasks:', window.MediaPipeTasks);
+                    if (window.MediaPipeTasks.vision) {
+                        window.vision = window.MediaPipeTasks.vision;
+                    } else {
+                        window.vision = window.MediaPipeTasks;
+                    }
+                    return true;
+                }
+                
+                // Check for MediaPipe namespace
+                if (window.MediaPipe) {
+                    console.log('✓ Found window.MediaPipe:', window.MediaPipe);
+                    if (window.MediaPipe.tasks && window.MediaPipe.tasks.vision) {
+                        window.vision = window.MediaPipe.tasks.vision;
+                    } else if (window.MediaPipe.tasks) {
+                        window.vision = window.MediaPipe.tasks;
+                    } else {
+                        window.vision = window.MediaPipe;
+                    }
+                    return true;
+                }
+                
+                // Check for direct exports
+                if (window.PoseLandmarker && window.FilesetResolver) {
+                    console.log('✓ Found PoseLandmarker and FilesetResolver directly');
+                    window.vision = {
+                        PoseLandmarker: window.PoseLandmarker,
+                        FilesetResolver: window.FilesetResolver
+                    };
+                    return true;
+                }
+                
+                // Check script execution
+                const script = document.querySelector('script[src*="mediapipe"]');
+                if (script) {
+                    console.log('Script element found, readyState:', script.readyState);
+                    if (script.readyState === 'complete' || script.readyState === 'loaded') {
+                        // Script loaded, check all window properties
+                        const allKeys = Object.keys(window);
+                        console.log('All window keys count:', allKeys.length);
+                        
+                        // Look for anything that might be MediaPipe
+                        const possibleKeys = allKeys.filter(k => {
+                            const lower = k.toLowerCase();
+                            return (lower.includes('media') || lower.includes('vision') || 
+                                   lower.includes('pose') || lower.includes('task') ||
+                                   lower.includes('landmark') || lower.includes('fileset')) &&
+                                   !k.startsWith('on') && typeof window[k] === 'object';
+                        });
+                        
+                        if (possibleKeys.length > 0) {
+                            console.log('Possible MediaPipe keys found:', possibleKeys);
+                            for (const key of possibleKeys) {
+                                const obj = window[key];
+                                if (obj && (obj.PoseLandmarker || obj.FilesetResolver || 
+                                           obj.createFromOptions || obj.forVisionTasks)) {
+                                    console.log(`✓ Found MediaPipe in window.${key}`);
+                                    window.vision = obj;
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                if (checkCount >= maxChecks) {
+                    console.error('❌ MediaPipe not found after', maxChecks, 'checks');
+                    console.error('Script readyState:', script ? script.readyState : 'no script');
+                    console.error('All window properties:', Object.keys(window).slice(0, 100));
+                    return false;
+                }
+                
+                return false;
+            }
+            
+            // Start checking immediately and periodically
+            if (!checkMediaPipe()) {
+                const interval = setInterval(() => {
+                    if (checkMediaPipe() || checkCount >= maxChecks) {
+                        clearInterval(interval);
+                    }
+                }, 200);
+            }
+        })();
+    </script>
+    
     <script>
         let poseDetector = null;
         let videoElement = null;
@@ -464,6 +614,7 @@
         let isDetecting = false;
         let isCameraRunning = false;
         let videoStream = null;
+        let isInitialized = false;
 
         let detectionMetrics = {
             confidence: 0,
@@ -479,88 +630,259 @@
             UNKNOWN: 'unknown'
         };
 
-        async function init() {
-            videoElement = document.getElementById('videoElement');
-            canvasElement = document.getElementById('canvas');
-            canvasCtx = canvasElement.getContext('2d');
-
-            const updateCanvasSize = () => {
-                canvasElement.width = canvasElement.offsetWidth;
-                canvasElement.height = canvasElement.offsetHeight;
-            };
-            updateCanvasSize();
-            window.addEventListener('resize', updateCanvasSize);
-
-            if (!window.vision) {
-                showError('MediaPipe library failed to load');
-                return;
-            }
-
+        // Wait for MediaPipe Pose (Solutions API) to load
+        async function waitForMediaPipe() {
+            console.log('waitForMediaPipe: Waiting for MediaPipe Pose...');
+            
+            // Wait for the custom event
             try {
-                const { PoseLandmarker, FilesetResolver } = window.vision;
-
-                const filesetResolver = await FilesetResolver.forVisionTasks(
-                    'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm'
-                );
-
-                poseDetector = await PoseLandmarker.createFromOptions(filesetResolver, {
-                    baseOptions: {
-                        modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task'
-                    },
-                    runningMode: 'VIDEO',
-                    numPoses: 1
+                await new Promise((resolve, reject) => {
+                    const timeout = setTimeout(() => {
+                        reject(new Error('MediaPipe Pose load timeout'));
+                    }, 10000);
+                    
+                    const onLoaded = () => {
+                        clearTimeout(timeout);
+                        console.log('✓ MediaPipe Pose loaded');
+                        resolve();
+                    };
+                    
+                    const onError = (e) => {
+                        clearTimeout(timeout);
+                        console.error('MediaPipe Pose load error:', e.detail);
+                        reject(e.detail || new Error('MediaPipe Pose failed to load'));
+                    };
+                    
+                    window.addEventListener('mediapipe-loaded', onLoaded, { once: true });
+                    window.addEventListener('mediapipe-error', onError, { once: true });
                 });
+            } catch (e) {
+                console.log('Event not received, checking directly:', e.message);
+            }
+            
+            // Direct check
+            if (window.Pose) {
+                console.log('✓ MediaPipe Pose found');
+                return { Pose: window.Pose };
+            }
+            
+            throw new Error('MediaPipe Pose failed to load. Please refresh the page.');
+        }
 
+        async function init() {
+            try {
+                console.log('=== Starting initialization ===');
+                updateStatus('Initializing...');
+                
+                videoElement = document.getElementById('videoElement');
+                canvasElement = document.getElementById('canvas');
+                
+                if (!videoElement || !canvasElement) {
+                    const errorMsg = 'Required elements not found';
+                    console.error(errorMsg);
+                    showError(errorMsg);
+                    updateStatus('Error');
+                    return;
+                }
+                
+                console.log('Video and canvas elements found');
+                canvasCtx = canvasElement.getContext('2d');
+                if (!canvasCtx) {
+                    const errorMsg = 'Failed to get canvas context';
+                    console.error(errorMsg);
+                    showError(errorMsg);
+                    updateStatus('Error');
+                    return;
+                }
+
+                // Set initial canvas size
+                canvasElement.width = canvasElement.offsetWidth || 640;
+                canvasElement.height = canvasElement.offsetHeight || 480;
+                console.log('Canvas initialized:', canvasElement.width, 'x', canvasElement.height);
+
+                const updateCanvasSize = () => {
+                    if (videoElement.videoWidth && videoElement.videoHeight) {
+                        canvasElement.width = videoElement.videoWidth;
+                        canvasElement.height = videoElement.videoHeight;
+                    } else {
+                        canvasElement.width = canvasElement.offsetWidth || 640;
+                        canvasElement.height = canvasElement.offsetHeight || 480;
+                    }
+                };
+                window.addEventListener('resize', updateCanvasSize);
+
+                updateStatus('Loading MediaPipe...');
+                console.log('Waiting for MediaPipe Pose...');
+                
+                // Wait for MediaPipe Pose to be available
+                const mediaPipe = await waitForMediaPipe();
+                console.log('MediaPipe Pose object:', mediaPipe);
+
+                if (!mediaPipe || !mediaPipe.Pose) {
+                    throw new Error('MediaPipe Pose not available');
+                }
+
+                const { Pose } = mediaPipe;
+
+                updateStatus('Initializing pose detector...');
+                console.log('Creating MediaPipe Pose detector...');
+                
+                // Initialize MediaPipe Pose (Solutions API)
+                poseDetector = new Pose({
+                    locateFile: (file) => {
+                        return `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`;
+                    }
+                });
+                
+                poseDetector.setOptions({
+                    modelComplexity: 1,
+                    smoothLandmarks: true,
+                    enableSegmentation: false,
+                    smoothSegmentation: false,
+                    minDetectionConfidence: 0.5,
+                    minTrackingConfidence: 0.5
+                });
+                
+                // Set up results callback
+                poseDetector.onResults((results) => {
+                    if (results.poseLandmarks && results.poseLandmarks.length > 0) {
+                        const landmarks = results.poseLandmarks;
+                        
+                        canvasCtx.save();
+                        canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+                        canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+                        
+                        drawSkeleton(landmarks);
+                        
+                        const angles = calculateJointAngles(landmarks);
+                        displayJointAngles(angles);
+                        
+                        const confidence = landmarks.reduce((sum, l) => sum + (l.visibility || 0), 0) / landmarks.length;
+                        detectionMetrics.confidence = Math.round(confidence * 100);
+                        document.getElementById('confidenceValue').textContent = detectionMetrics.confidence + '%';
+                        
+                        updateStatus('Tracking');
+                        
+                        const poseState = detectPoseState(angles);
+                        updateRepCount(poseState);
+                        
+                        canvasCtx.restore();
+                    } else {
+                        canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+                        canvasCtx.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
+                        updateStatus('No pose detected');
+                        document.getElementById('confidenceValue').textContent = '--';
+                    }
+                });
+                
+                console.log('MediaPipe Pose detector created successfully');
+
+                isInitialized = true;
                 updateStatus('Ready');
                 showSuccess('Pose detector loaded successfully');
+                document.getElementById('startBtn').disabled = false;
             } catch (error) {
                 console.error('Error initializing pose detector:', error);
+                console.error('Error stack:', error.stack);
                 showError('Failed to load pose detector: ' + error.message);
+                updateStatus('Error');
+                document.getElementById('startBtn').disabled = true;
             }
         }
 
         async function startCamera() {
-            if (isCameraRunning) return;
+            if (isCameraRunning) {
+                console.log('Camera already running');
+                return;
+            }
+            
+            if (!isInitialized || !poseDetector) {
+                const errorMsg = 'Pose detector not ready. Please wait for initialization to complete.';
+                console.error(errorMsg);
+                showError(errorMsg);
+                return;
+            }
 
             try {
                 updateStatus('Requesting camera...');
+                console.log('Requesting camera access...');
+                
+                // Check if getUserMedia is available
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                    throw new Error('Camera API not available in this browser');
+                }
+
                 videoStream = await navigator.mediaDevices.getUserMedia({
                     video: {
-                        width: { ideal: 960 },
-                        height: { ideal: 540 },
+                        width: { ideal: 1280, min: 640 },
+                        height: { ideal: 720, min: 480 },
                         facingMode: 'user'
                     },
                     audio: false
                 });
 
+                console.log('Camera access granted');
                 videoElement.srcObject = videoStream;
 
-                videoElement.onloadedmetadata = () => {
-                    videoElement.play()
-                        .then(() => {
-                            isCameraRunning = true;
-                            isDetecting = true;
-                            updateStatus('Detecting...');
-                            document.getElementById('startBtn').disabled = true;
-                            document.getElementById('stopBtn').disabled = false;
-                            startDetection();
-                        })
-                        .catch(err => {
-                            console.error('Video play error:', err);
-                            showError('Failed to start video playback');
-                            updateStatus('Error');
-                        });
-                };
+                // Wait for video metadata
+                await new Promise((resolve, reject) => {
+                    const timeout = setTimeout(() => {
+                        reject(new Error('Video metadata timeout'));
+                    }, 5000);
+
+                    videoElement.onloadedmetadata = () => {
+                        clearTimeout(timeout);
+                        console.log('Video metadata loaded:', videoElement.videoWidth, 'x', videoElement.videoHeight);
+                        resolve();
+                    };
+
+                    videoElement.onerror = (err) => {
+                        clearTimeout(timeout);
+                        reject(new Error('Video element error'));
+                    };
+                });
+
+                // Update canvas size to match video dimensions
+                canvasElement.width = videoElement.videoWidth;
+                canvasElement.height = videoElement.videoHeight;
+                console.log('Canvas size set to:', canvasElement.width, 'x', canvasElement.height);
+                
+                // Start video playback
+                try {
+                    await videoElement.play();
+                    console.log('Video playback started');
+                    
+                    isCameraRunning = true;
+                    isDetecting = true;
+                    updateStatus('Detecting...');
+                    document.getElementById('startBtn').disabled = true;
+                    document.getElementById('stopBtn').disabled = false;
+                    
+                    // Start detection loop
+                    startDetection();
+                } catch (playError) {
+                    console.error('Video play error:', playError);
+                    showError('Failed to start video playback: ' + playError.message);
+                    updateStatus('Error');
+                    stopCamera();
+                }
             } catch (error) {
                 console.error('Camera error:', error);
-                if (error.name === 'NotAllowedError') {
-                    showError('Camera permission denied. Please enable camera access in your browser settings.');
-                } else if (error.name === 'NotFoundError') {
+                if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+                    showError('Camera permission denied. Please enable camera access in your browser settings and refresh the page.');
+                } else if (error.name === 'NotFoundError' || error.name === 'DevicesNotFoundError') {
                     showError('No camera found. Please connect a camera and try again.');
+                } else if (error.name === 'NotReadableError' || error.name === 'TrackStartError') {
+                    showError('Camera is being used by another application. Please close other apps using the camera.');
                 } else {
                     showError('Camera error: ' + error.message);
                 }
                 updateStatus('Error');
+                // Clean up on error
+                if (videoStream) {
+                    videoStream.getTracks().forEach(track => track.stop());
+                    videoStream = null;
+                }
             }
         }
 
@@ -579,32 +901,23 @@
 
         function startDetection() {
             if (!isDetecting || !isCameraRunning || !poseDetector) return;
-
-            const now = performance.now();
+            
+            // Check if video is ready
+            if (videoElement.readyState < videoElement.HAVE_METADATA) {
+                requestAnimationFrame(startDetection);
+                return;
+            }
             
             try {
-                const result = poseDetector.detectForVideo(videoElement, now);
-
-                canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-                canvasCtx.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
-
-                if (result.landmarks && result.landmarks.length > 0) {
-                    const landmarks = result.landmarks[0];
-                    
-                    const confidence = result.landmarks[0].reduce((sum, l) => sum + l.visibility || 0, 0) / result.landmarks[0].length;
-                    detectionMetrics.confidence = Math.round(confidence * 100);
-                    document.getElementById('confidenceValue').textContent = detectionMetrics.confidence + '%';
-
-                    drawSkeleton(landmarks);
-
-                    const angles = calculateJointAngles(landmarks);
-                    displayJointAngles(angles);
-
-                    updateStatus('Tracking');
-
-                    const poseState = detectPoseState(angles);
-                    updateRepCount(poseState);
+                // Ensure canvas matches video dimensions
+                if (canvasElement.width !== videoElement.videoWidth || 
+                    canvasElement.height !== videoElement.videoHeight) {
+                    canvasElement.width = videoElement.videoWidth;
+                    canvasElement.height = videoElement.videoHeight;
                 }
+                
+                // Send frame to MediaPipe Pose (Solutions API)
+                poseDetector.send({ image: videoElement });
             } catch (error) {
                 console.error('Detection error:', error);
             }
@@ -616,24 +929,32 @@
             const width = canvasElement.width;
             const height = canvasElement.height;
 
+            // MediaPipe Pose landmarks connections (33 points)
             const connections = [
-                [11, 13], [13, 15], [12, 14], [14, 16],
-                [11, 12],
-                [11, 23], [12, 24],
-                [23, 24],
-                [23, 25], [25, 27], [24, 26], [26, 28]
+                // Face (simplified)
+                [0, 1], [1, 2], [2, 3], [3, 7],
+                // Upper body
+                [11, 12], [11, 13], [13, 15], [12, 14], [14, 16],
+                // Torso
+                [11, 23], [12, 24], [23, 24],
+                // Lower body
+                [23, 25], [25, 27], [24, 26], [26, 28],
+                [27, 29], [27, 31], [29, 31],
+                [28, 30], [28, 32], [30, 32]
             ];
 
             canvasCtx.strokeStyle = '#2d9e5f';
             canvasCtx.lineWidth = 3;
             connections.forEach(([start, end]) => {
-                const startLm = landmarks[start];
-                const endLm = landmarks[end];
-                if (startLm && endLm && startLm.visibility > 0.3 && endLm.visibility > 0.3) {
-                    canvasCtx.beginPath();
-                    canvasCtx.moveTo(startLm.x * width, startLm.y * height);
-                    canvasCtx.lineTo(endLm.x * width, endLm.y * height);
-                    canvasCtx.stroke();
+                if (landmarks[start] && landmarks[end]) {
+                    const startLm = landmarks[start];
+                    const endLm = landmarks[end];
+                    if (startLm.visibility > 0.3 && endLm.visibility > 0.3) {
+                        canvasCtx.beginPath();
+                        canvasCtx.moveTo(startLm.x * width, startLm.y * height);
+                        canvasCtx.lineTo(endLm.x * width, endLm.y * height);
+                        canvasCtx.stroke();
+                    }
                 }
             });
 
@@ -650,28 +971,34 @@
         function calculateJointAngles(landmarks) {
             const angles = {};
 
+            // MediaPipe Pose landmark indices
+            // Left: 23 (hip), 25 (knee), 27 (ankle)
+            // Right: 24 (hip), 26 (knee), 28 (ankle)
+            // Left arm: 11 (shoulder), 13 (elbow), 15 (wrist)
+            // Right arm: 12 (shoulder), 14 (elbow), 16 (wrist)
+
             angles.leftKnee = calculateAngle(
-                landmarks[23],
-                landmarks[25],
-                landmarks[27]
+                landmarks[23],  // Left hip
+                landmarks[25],  // Left knee
+                landmarks[27]   // Left ankle
             );
 
             angles.rightKnee = calculateAngle(
-                landmarks[24],
-                landmarks[26],
-                landmarks[28]
+                landmarks[24],  // Right hip
+                landmarks[26],  // Right knee
+                landmarks[28]   // Right ankle
             );
 
             angles.leftElbow = calculateAngle(
-                landmarks[11],
-                landmarks[13],
-                landmarks[15]
+                landmarks[11],  // Left shoulder
+                landmarks[13],  // Left elbow
+                landmarks[15]   // Left wrist
             );
 
             angles.rightElbow = calculateAngle(
-                landmarks[12],
-                landmarks[14],
-                landmarks[16]
+                landmarks[12],  // Right shoulder
+                landmarks[14],  // Right elbow
+                landmarks[16]   // Right wrist
             );
 
             return angles;
@@ -771,7 +1098,95 @@
             setTimeout(() => elem.classList.remove('show'), 3000);
         }
 
-        window.addEventListener('load', init);
+        // Wait for MediaPipe script to load, then initialize
+        function waitForScriptAndInit() {
+            console.log('waitForScriptAndInit called');
+            const script = document.getElementById('mediapipe-script') || document.querySelector('script[src*="mediapipe"]');
+            
+            if (script) {
+                console.log('MediaPipe script tag found');
+                
+                // Check if script is already loaded
+                const checkScriptLoaded = () => {
+                    if (window.vision || window.MediaPipeTasks || window.MediaPipe) {
+                        console.log('MediaPipe already available, initializing...');
+                        init();
+                        return true;
+                    }
+                    return false;
+                };
+                
+                // If already loaded, init immediately
+                if (checkScriptLoaded()) {
+                    return;
+                }
+                
+                // Check script loading state
+                if (script.complete || (script.readyState && (script.readyState === 'complete' || script.readyState === 'loaded'))) {
+                    console.log('Script marked as complete, waiting a bit then initializing...');
+                    setTimeout(() => {
+                        if (!checkScriptLoaded()) {
+                            console.log('Script complete but MediaPipe not found, trying init anyway...');
+                            init();
+                        }
+                    }, 500);
+                } else {
+                    console.log('Waiting for script to load...');
+                    // Wait for script to load
+                    const onLoad = () => {
+                        console.log('Script load event fired');
+                        setTimeout(() => {
+                            if (!checkScriptLoaded()) {
+                                console.log('Script loaded but MediaPipe not found, trying init anyway...');
+                                init();
+                            }
+                        }, 300);
+                    };
+                    
+                    script.addEventListener('load', onLoad);
+                    script.addEventListener('error', (e) => {
+                        console.error('Script load error:', e);
+                        showError('Failed to load MediaPipe script. Please check your internet connection and refresh the page.');
+                        updateStatus('Error');
+                    });
+                    
+                    // Fallback timeout - if script doesn't load in 5 seconds, try anyway
+                    setTimeout(() => {
+                        if (!isInitialized) {
+                            console.log('Script load timeout, trying init anyway...');
+                            init();
+                        }
+                    }, 5000);
+                }
+            } else {
+                console.warn('MediaPipe script tag not found, trying init anyway...');
+                // Script tag not found, try to initialize anyway (it might load dynamically)
+                setTimeout(init, 1000);
+            }
+        }
+
+        // Initialize when DOM is ready
+        console.log('Setting up initialization...');
+        if (document.readyState === 'loading') {
+            console.log('DOM still loading, waiting for DOMContentLoaded...');
+            document.addEventListener('DOMContentLoaded', () => {
+                console.log('DOMContentLoaded fired');
+                waitForScriptAndInit();
+            });
+        } else {
+            console.log('DOM already ready, initializing...');
+            // DOM is already ready
+            waitForScriptAndInit();
+        }
+        
+        // Also try on window load as fallback
+        window.addEventListener('load', () => {
+            console.log('Window load event fired');
+            if (!isInitialized) {
+                console.log('Not initialized yet, trying again...');
+                waitForScriptAndInit();
+            }
+        });
     </script>
 </body>
 </html>
