@@ -88,6 +88,7 @@
             border-radius: 8px;
             overflow: hidden;
             aspect-ratio: 4/3;
+            margin-bottom: 15px;
         }
 
         video, canvas {
@@ -96,7 +97,7 @@
             display: block;
         }
 
-        #canvas {
+        #sitStandCanvas {
             position: absolute;
             top: 0;
             left: 0;
@@ -105,98 +106,50 @@
         .controls {
             display: flex;
             gap: 10px;
-            margin-top: 15px;
+            margin-bottom: 15px;
         }
 
-        button {
-            padding: 12px 24px;
-            font-size: 14px;
-            font-weight: 600;
+        .btn-start, .btn-stop {
+            flex: 1;
+            padding: 12px 20px;
             border: none;
             border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
         .btn-start {
-            background: #10b981;
+            background: #2d9e5f;
             color: white;
-            flex: 1;
         }
 
         .btn-start:hover:not(:disabled) {
-            background: #059669;
+            background: #1f6f42;
             transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(45, 158, 95, 0.3);
+        }
+
+        .btn-start:disabled {
+            background: #ccc;
+            cursor: not-allowed;
         }
 
         .btn-stop {
             background: #ef4444;
             color: white;
-            flex: 1;
         }
 
         .btn-stop:hover:not(:disabled) {
             background: #dc2626;
             transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
         }
 
-        button:disabled {
-            opacity: 0.5;
+        .btn-stop:disabled {
+            background: #ccc;
             cursor: not-allowed;
-        }
-
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-top: 15px;
-        }
-
-        .metric {
-            background: #f5faf8;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 4px solid #2d9e5f;
-        }
-
-        .metric-label {
-            font-size: 12px;
-            color: #666;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
-        }
-
-        .metric-value {
-            font-size: 24px;
-            font-weight: 700;
-            color: #2d9e5f;
-        }
-
-        .feedback {
-            background: #f0f9ff;
-            border-left: 4px solid #0ea5e9;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-            min-height: 80px;
-        }
-
-        .feedback-title {
-            font-weight: 600;
-            color: #0369a1;
-            margin-bottom: 8px;
-            font-size: 13px;
-            text-transform: uppercase;
-        }
-
-        .feedback-text {
-            color: #0c4a6e;
-            font-size: 14px;
-            line-height: 1.6;
         }
 
         .status-bar {
@@ -215,6 +168,10 @@
             width: 10px;
             height: 10px;
             border-radius: 50%;
+            background: #ef4444;
+        }
+
+        .status-indicator.good {
             background: #10b981;
         }
 
@@ -222,8 +179,52 @@
             background: #f59e0b;
         }
 
-        .status-indicator.error {
-            background: #ef4444;
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .metric {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border-left: 4px solid #2d9e5f;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .metric-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2d9e5f;
+        }
+
+        .feedback {
+            background: #e8f5e9;
+            border: 1px solid #c8e6c9;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .feedback-title {
+            font-weight: 600;
+            color: #1b5e20;
+            margin-bottom: 8px;
+        }
+
+        .feedback-text {
+            font-size: 13px;
+            color: #2d5016;
+            line-height: 1.5;
         }
 
         .info-box {
@@ -231,7 +232,7 @@
             border: 1px solid #fcd34d;
             border-radius: 8px;
             padding: 15px;
-            margin-top: 15px;
+            margin-bottom: 15px;
             font-size: 13px;
             color: #92400e;
             line-height: 1.6;
@@ -248,7 +249,6 @@
             border: 1px solid #fca5a5;
             border-radius: 8px;
             padding: 15px;
-            margin-top: 15px;
             font-size: 13px;
             color: #7f1d1d;
             line-height: 1.6;
@@ -260,19 +260,56 @@
             color: #991b1b;
         }
 
+        .recording-indicator {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: #ef4444;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 12px;
+            display: none;
+            z-index: 10;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .recording-indicator.active {
+            display: flex;
+        }
+
+        .recording-dot {
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
         @media (max-width: 968px) {
             .content-grid {
                 grid-template-columns: 1fr;
             }
 
             .metrics-grid {
-                grid-template-columns: repeat(4, 1fr);
+                grid-template-columns: repeat(2, 1fr);
             }
         }
 
         @media (max-width: 640px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
             .metrics-grid {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: 1fr 1fr;
             }
 
             .header {
@@ -293,93 +330,39 @@
                 width: 100%;
             }
         }
-
-        .recording-indicator {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            background: #ef4444;
-            color: white;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 12px;
-            display: none;
-            z-index: 10;
-        }
-
-        .recording-indicator.active {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .recording-dot {
-            width: 8px;
-            height: 8px;
-            background: white;
-            border-radius: 50%;
-            animation: pulse 1s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .angle-display {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 12px 16px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 14px;
-            z-index: 10;
-        }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
         <div class="header">
-            <button id="sitStandBackBtn" style="background: white; color: #2d9e5f;">
+            <button id="sitStandBackBtn">
                 <i class="fas fa-arrow-left"></i> Back
             </button>
             <h1>Sit-to-Stand Exercise</h1>
             <div></div>
         </div>
 
-        <!-- Main Content -->
         <div class="content-grid">
-            <!-- Left: Video Feed -->
             <div class="section">
                 <h2>Your Motion</h2>
                 <div class="video-container">
-                    <video id="sitStandVideo" autoplay playsinline style="transform: scaleX(-1);"></video>
+                    <video id="sitStandVideo" autoplay playsinline></video>
                     <canvas id="sitStandCanvas"></canvas>
                     <div class="recording-indicator" id="recordingIndicator">
                         <div class="recording-dot"></div>
-                        <span id="recordingText">Recording...</span>
-                    </div>
-                    <div class="angle-display" id="angleDisplay">
-                        <div>L Knee: <span id="lKnee">0</span>°</div>
-                        <div>R Knee: <span id="rKnee">0</span>°</div>
+                        <span>Recording...</span>
                     </div>
                 </div>
                 <div class="controls">
-                    <button id="sitStandStartBtn" class="btn-start">Start Recording</button>
+                    <button id="sitStandStartBtn" class="btn-start" disabled>Start Recording</button>
                     <button id="sitStandStopBtn" class="btn-stop" disabled>Stop Recording</button>
                 </div>
                 <div class="status-bar">
                     <span class="status-indicator" id="statusIndicator"></span>
-                    <span id="statusText">Ready to start. Center yourself in the frame.</span>
+                    <span id="statusText">Loading model...</span>
                 </div>
             </div>
 
-            <!-- Right: Metrics & Feedback -->
             <div class="section">
                 <h2>Exercise Tracking</h2>
                 
@@ -389,409 +372,487 @@
                         <div class="metric-value" id="repsCount">0</div>
                     </div>
                     <div class="metric">
-                        <div class="metric-label">Hold Time</div>
-                        <div class="metric-value" id="holdTime">0.0s</div>
-                    </div>
-                    <div class="metric">
                         <div class="metric-label">Duration</div>
                         <div class="metric-value" id="duration">0s</div>
                     </div>
                     <div class="metric">
-                        <div class="metric-label">Confidence</div>
-                        <div class="metric-value" id="confidence">0%</div>
+                        <div class="metric-label">Left Knee</div>
+                        <div class="metric-value" id="lKnee">--°</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">Right Knee</div>
+                        <div class="metric-value" id="rKnee">--°</div>
                     </div>
                 </div>
 
                 <div class="feedback" id="feedbackBox">
                     <div class="feedback-title">Live Feedback</div>
                     <div class="feedback-text" id="feedbackText">
-                        Stand about 2 meters from the camera with your full body visible. Good lighting is important for accurate tracking.
+                        Stand 2 meters from camera with full body visible. Good lighting is important.
                     </div>
                 </div>
 
                 <div class="info-box">
-                    <strong>✓ Safe Exercise Guidelines for Arthritis:</strong>
-                    • Knee bend target: 90-110 degrees<br>
-                    • Move slowly and steadily<br>
-                    • Left/right knees should stay balanced (±15°)<br>
-                    • Stop immediately if you feel any pain
+                    <strong>Safe Exercise Guidelines:</strong>
+                    Knee bend target: 90-110 degrees. Move slowly and steadily. Keep knees balanced. Stop if you feel pain.
                 </div>
 
                 <div class="safety-alert">
-                    <strong>⚠ Important Safety Notice</strong>
-                    This tool is NOT medical advice. Always consult your doctor before starting exercises. Stop immediately if you experience pain, dizziness, or loss of balance.
+                    <strong>Important Safety Notice</strong>
+                    This tool is NOT medical advice. Always consult your doctor before starting exercises.
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- MediaPipe & TensorFlow -->
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.9"></script>
+    <script type="module">
+        import * as MediaPipe from './vision_bundle.mjs';
+        
+        const MODEL_URL = 'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task';
+        const WASM_URL = './wasm';
 
-    <script>
-        (() => {
-            const MODEL_ASSET_PATH = "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task";
-            const CONFIDENCE_GATE = 0.5;
-            const ARTHRITIS_MIN_FLEXION = 90;
-            const ARTHRITIS_MAX_FLEXION = 110;
-            const ASYMMETRY_THRESHOLD = 15;
+        let poseDetector = null;
+        let videoElement = null;
+        let canvasElement = null;
+        let canvasCtx = null;
+        let mediaStream = null;
+        let videoReady = false;
+        let isRecording = false;
+        let isDetecting = false;
+        let startTime = null;
+        let repCount = 0;
+        let previousState = null;
+        let lastRepTime = 0;
+        let exerciseData = [];
+        let maxKneeAngle = 0;
+        let minKneeAngle = 180;
 
-            let landmarker = null;
-            let videoElement = null;
-            let canvasElement = null;
-            let mediaStream = null;
-            let videoReady = false;
-            let isRecording = false;
-            let startTime = null;
-            let frameCount = 0;
-            let repCount = 0;
-            let previousAngles = null;
-            let previousLandmarks = null;
-            let currentConfidence = 0;
-            let awaitingUserGesture = false;
-
-            function cacheElements() {
-                videoElement = document.getElementById('sitStandVideo');
-                canvasElement = document.getElementById('sitStandCanvas');
+        async function initMediaPipe() {
+            try {
+                document.getElementById('statusText').textContent = 'Loading model...';
+                
+                const filesetResolver = await MediaPipe.FilesetResolver.forVisionTasks(WASM_URL);
+                poseDetector = await MediaPipe.PoseLandmarker.createFromOptions(filesetResolver, {
+                    baseOptions: { modelAssetPath: MODEL_URL },
+                    runningMode: 'VIDEO',
+                    numPoses: 1
+                });
+                
+                document.getElementById('statusText').textContent = 'Ready. Center yourself in frame.';
+                document.getElementById('statusIndicator').classList.add('good');
+                document.getElementById('sitStandStartBtn').disabled = false;
+                
+                console.log('MediaPipe loaded');
+            } catch (error) {
+                console.error('Init error:', error);
+                document.getElementById('statusText').textContent = 'Error: ' + error.message;
+                document.getElementById('statusIndicator').classList.add('warning');
             }
+        }
 
-            async function init() {
-                try {
-                    const vision = await window.FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.9/wasm");
-
-                    landmarker = await window.PoseLandmarker.createFromOptions(vision, {
-                        baseOptions: {
-                            modelAssetPath: MODEL_ASSET_PATH,
-                        },
-                        runningMode: "VIDEO",
-                    });
-
-                    console.log("MediaPipe Pose Landmarker loaded");
-                    updateStatus("Model loaded. Starting camera...", "good");
-
-                    await setupCamera();
-                } catch (err) {
-                    console.error("Initialization error:", err);
-                    updateStatus("Error: " + err.message, "error");
-                }
-            }
-
-            async function setupCamera() {
-                if (mediaStream) {
+        async function startCamera() {
+            try {
+                if (!poseDetector) {
+                    document.getElementById('statusText').textContent = 'Model loading...';
                     return;
                 }
 
-                try {
-                    mediaStream = await navigator.mediaDevices.getUserMedia({
-                        video: { width: 960, height: 540, facingMode: "user" },
-                    });
+                document.getElementById('statusText').textContent = 'Requesting camera...';
+                
+                mediaStream = await navigator.mediaDevices.getUserMedia({
+                    video: { width: { ideal: 960 }, height: { ideal: 540 }, facingMode: 'user' },
+                    audio: false
+                });
 
-                    videoElement.srcObject = mediaStream;
-
-                    await new Promise((resolve) => {
-                        const onReady = async () => {
-                            videoElement.removeEventListener('loadeddata', onReady);
-                            try {
-                                await videoElement.play();
-                                videoReady = true;
-                                updateStatus("Camera ready. Center yourself in the frame.", "good");
-                                requestAnimationFrame(detectPose);
-                                resolve();
-                                return;
-                            } catch (playError) {
-                                awaitingUserGesture = true;
-                                console.warn('Autoplay blocked, waiting for user gesture to start video.', playError);
-                                updateStatus("Camera needs your permission. Tap Start to begin.", "warning");
-                                updateFeedback("Tap Start Recording or click the video to enable the camera.");
-                            }
-                            resolve();
-                        };
-
-                        if (videoElement.readyState >= 2) {
-                            onReady();
-                        } else {
-                            videoElement.addEventListener('loadeddata', onReady);
-                        }
-                    });
-
-                    videoElement.addEventListener('play', () => {
-                        if (!videoReady) {
-                            videoReady = true;
-                            awaitingUserGesture = false;
-                            updateStatus("Camera ready. Center yourself in the frame.", "good");
-                            requestAnimationFrame(detectPose);
-                        }
-                    }, { once: true });
-                } catch (err) {
-                    console.error("Camera setup error:", err);
-                    updateStatus("Camera error: " + err.message + " - click Start to retry.", "error");
-                }
-            }
-
-            async function ensureCameraPlaying() {
-                if (videoReady && !videoElement.paused) return true;
-
-                try {
-                    await videoElement.play();
-                    videoReady = true;
-                    awaitingUserGesture = false;
-                    updateStatus("Camera ready. Center yourself in the frame.", "good");
-                    requestAnimationFrame(detectPose);
-                    return true;
-                } catch (err) {
-                    awaitingUserGesture = true;
-                    console.warn("User gesture required to start video:", err);
-                    updateFeedback("Tap the video or press Start Recording to allow camera playback.");
-                    return false;
-                }
-            }
-
-            function updateStatus(text, tone = "default") {
-                document.getElementById('statusText').textContent = text;
-                const indicator = document.getElementById('statusIndicator');
-                indicator.className = 'status-indicator ' + (tone === 'error' ? 'error' : tone === 'warning' ? 'warning' : '');
-            }
-
-            function updateFeedback(text) {
-                document.getElementById('feedbackText').textContent = text;
-            }
-
-            function distance3D(a, b) {
-                const dx = a.x - b.x;
-                const dy = a.y - b.y;
-                const dz = (a.z || 0) - (b.z || 0);
-                return Math.sqrt(dx * dx + dy * dy + dz * dz);
-            }
-
-            function calculateAngle(a, b, c) {
-                const ab = { x: a.x - b.x, y: a.y - b.y, z: (a.z || 0) - (b.z || 0) };
-                const cb = { x: c.x - b.x, y: c.y - b.y, z: (c.z || 0) - (b.z || 0) };
-                const dot = ab.x * cb.x + ab.y * cb.y + ab.z * cb.z;
-                const magAb = Math.sqrt(ab.x * ab.x + ab.y * ab.y + ab.z * ab.z);
-                const magCb = Math.sqrt(cb.x * cb.x + cb.y * cb.y + cb.z * cb.z);
-                const cosine = dot / (magAb * magCb + 1e-6);
-                return (Math.acos(Math.min(1, Math.max(-1, cosine))) * 180) / Math.PI;
-            }
-
-            function computeTorsoLength(landmarks) {
-                const leftShoulder = landmarks[11];
-                const rightShoulder = landmarks[12];
-                const leftHip = landmarks[23];
-                const rightHip = landmarks[24];
-                const shoulderSpan = distance3D(leftShoulder, rightShoulder);
-                const hipSpan = distance3D(leftHip, rightHip);
-                const spineLeft = distance3D(leftShoulder, leftHip);
-                const spineRight = distance3D(rightShoulder, rightHip);
-                return (shoulderSpan + hipSpan + spineLeft + spineRight) / 4;
-            }
-
-            function normalizeLandmarks(landmarks, torsoLength) {
-                if (!torsoLength) return landmarks;
-                return landmarks.map(point => ({
-                    ...point,
-                    x: point.x / torsoLength,
-                    y: point.y / torsoLength,
-                    z: (point.z || 0) / torsoLength,
-                }));
-            }
-
-            function smoothLandmarks(current, previous, alpha) {
-                if (!previous || previous.length !== current.length) return current;
-                return current.map((point, index) => {
-                    const prev = previous[index];
-                    return {
-                        ...point,
-                        x: alpha * point.x + (1 - alpha) * prev.x,
-                        y: alpha * point.y + (1 - alpha) * prev.y,
-                        z: (alpha * (point.z || 0) + (1 - alpha) * (prev.z || 0)),
-                        visibility: point.visibility !== undefined && prev.visibility !== undefined
-                            ? alpha * point.visibility + (1 - alpha) * prev.visibility
-                            : point.visibility,
+                videoElement.srcObject = mediaStream;
+                
+                await new Promise((resolve) => {
+                    videoElement.onloadedmetadata = async () => {
+                        await videoElement.play();
+                        videoReady = true;
+                        document.getElementById('statusText').textContent = 'Camera ready. Click Start to record.';
+                        resolve();
                     };
                 });
+            } catch (error) {
+                console.error('Camera error:', error);
+                document.getElementById('statusText').textContent = 'Camera error: ' + error.message;
+            }
+        }
+
+        function startRecording() {
+            if (!videoReady || !poseDetector) {
+                alert('Please wait for camera and model to load');
+                return;
             }
 
-            async function detectPose() {
-                if (!isRecording) {
-                    return;
-                }
+            isRecording = true;
+            isDetecting = true;
+            startTime = Date.now();
+            repCount = 0;
+            previousState = null;
+            lastRepTime = 0;
+            exerciseData = [];
+            maxKneeAngle = 0;
+            minKneeAngle = 180;
 
-                if (!landmarker || !videoReady || videoElement.readyState !== videoElement.HAVE_ENOUGH_DATA) {
-                    requestAnimationFrame(detectPose);
-                    return;
-                }
+            // Reset UI displays
+            document.getElementById('repsCount').textContent = '0';
+            document.getElementById('duration').textContent = '0s';
+            document.getElementById('lKnee').textContent = '--°';
+            document.getElementById('rKnee').textContent = '--°';
+            document.getElementById('feedbackText').textContent = 'Performing sit-to-stand exercise. Move steadily and smoothly.';
 
-                const now = performance.now();
-                const result = landmarker.detectForVideo(videoElement, now);
+            document.getElementById('sitStandStartBtn').disabled = true;
+            document.getElementById('sitStandStopBtn').disabled = false;
+            document.getElementById('recordingIndicator').classList.add('active');
+            document.getElementById('statusText').textContent = 'Recording - Perform sit-to-stand';
+            document.getElementById('statusIndicator').classList.remove('good');
+            document.getElementById('statusIndicator').classList.add('warning');
 
-                if (result && result.landmarks && result.landmarks[0]) {
-                    const landmarks = result.landmarks[0];
-                    const confidence = landmarks.reduce((acc, p) => acc + (p.visibility || 0), 0) / landmarks.length;
-                    currentConfidence = confidence;
+            detectPose();
+        }
 
-                    document.getElementById('confidence').textContent = Math.round(confidence * 100) + '%';
+        function stopRecording() {
+            isRecording = false;
+            isDetecting = false;
 
-                    if (confidence >= CONFIDENCE_GATE) {
-                        const smoothed = smoothLandmarks(landmarks, previousLandmarks, 0.6);
-                        previousLandmarks = smoothed;
+            document.getElementById('sitStandStartBtn').disabled = false;
+            document.getElementById('sitStandStopBtn').disabled = true;
+            document.getElementById('recordingIndicator').classList.remove('active');
 
-                        const torsoLength = computeTorsoLength(smoothed);
-                        const normalized = normalizeLandmarks(smoothed, torsoLength);
+            const duration = Math.round((Date.now() - startTime) / 1000);
+            document.getElementById('statusText').textContent = 'Completed ' + repCount + ' reps in ' + duration + 's';
+            document.getElementById('statusIndicator').classList.remove('warning');
+            document.getElementById('statusIndicator').classList.add('good');
+            
+            // Show AI report and download button
+            showExerciseReport(duration);
+        }
 
-                        const leftKnee = calculateAngle(normalized[23], normalized[25], normalized[27]);
-                        const rightKnee = calculateAngle(normalized[24], normalized[26], normalized[28]);
-                        const avgKnee = (leftKnee + rightKnee) / 2;
-                        const asymmetry = Math.abs(leftKnee - rightKnee);
+        let lastAudioFeedbackTime = 0;
 
-                        document.getElementById('lKnee').textContent = Math.round(leftKnee);
-                        document.getElementById('rKnee').textContent = Math.round(rightKnee);
+        function playAudioFeedback(text) {
+            const now = Date.now();
+            // Only play audio feedback every 3 seconds to avoid spam
+            if (now - lastAudioFeedbackTime < 3000) return;
+            
+            lastAudioFeedbackTime = now;
+            
+            const synth = window.speechSynthesis;
+            synth.cancel(); // Cancel any previous speech
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 1.2;
+            utterance.pitch = 1;
+            synth.speak(utterance);
+        }
 
-                        if (asymmetry > ASYMMETRY_THRESHOLD) {
-                            updateFeedback("⚠ Your knees are uneven. Try to move them together symmetrically.");
-                        } else if (avgKnee < ARTHRITIS_MIN_FLEXION) {
-                            updateFeedback("Try to bend your knees a bit more. Aim for 90-110 degrees.");
-                        } else if (avgKnee > ARTHRITIS_MAX_FLEXION + 20) {
-                            updateFeedback("You're bending too far. This may stress your joints. Stay above 90 degrees.");
-                        } else if (avgKnee >= ARTHRITIS_MIN_FLEXION && avgKnee <= ARTHRITIS_MAX_FLEXION) {
-                            updateFeedback("✓ Excellent! Your knee angle is in the safe range for arthritis.");
-                        } else {
-                            updateFeedback("Good form. Keep moving steadily and maintain balance.");
-                        }
+        function updateLiveFeedback(avgKnee, asymmetry) {
+            let feedback = '';
+            let audioFeedback = '';
+            
+            if (asymmetry > 25) {
+                feedback = '⚠ Asymmetry detected: ' + Math.round(asymmetry) + '°. Balance both knees equally.';
+                audioFeedback = 'Balance both knees equally';
+            } else if (avgKnee < 90) {
+                feedback = '⬇ Bend deeper: ' + Math.round(avgKnee) + '° (target: 90-100°)';
+                audioFeedback = 'Bend your knees deeper';
+            } else if (avgKnee > 150) {
+                feedback = '⬆ Fully extended: ' + Math.round(avgKnee) + '° ✓';
+                audioFeedback = 'Good, fully extended';
+            } else if (avgKnee >= 90 && avgKnee <= 110) {
+                feedback = '✓ Sitting position excellent: ' + Math.round(avgKnee) + '°';
+                audioFeedback = 'Excellent sitting position';
+            } else {
+                feedback = 'Good position: ' + Math.round(avgKnee) + '°';
+                audioFeedback = '';
+            }
+            
+            document.getElementById('feedbackText').textContent = feedback;
+            
+            // Play audio if there's guidance needed
+            if (audioFeedback && isRecording) {
+                playAudioFeedback(audioFeedback);
+            }
+        }
 
-                        frameCount++;
-                        updateRepCount(avgKnee);
-                        document.getElementById('duration').textContent = Math.round((Date.now() - startTime) / 1000) + 's';
-                        document.getElementById('repsCount').textContent = repCount;
+        async function generateAIReport(duration) {
+            const reps = repCount;
+            const repsPerMin = duration > 0 ? Math.round((reps / duration) * 60) : 0;
+            const rangeOfMotion = Math.round(maxKneeAngle - minKneeAngle);
+            
+            const prompt = `You are a professional physical therapist. Based on the following sit-to-stand exercise data, generate a professional medical report:
 
-                        drawPose(landmarks);
-                        updateStatus("Tracking motion - " + repCount + " reps", "good");
-                    } else {
-                        updateStatus("Low visibility. Improve lighting or step back.", "warning");
-                    }
+Exercise Data:
+- Reps Completed: ${reps}
+- Duration: ${duration} seconds
+- Pace: ${repsPerMin} reps/minute
+- Maximum Knee Extension: ${Math.round(maxKneeAngle)}°
+- Minimum Knee Bend: ${Math.round(minKneeAngle)}°
+- Range of Motion: ${rangeOfMotion}°
+
+Please provide a professional report in HTML format that includes:
+1. Patient Assessment Summary (2-3 sentences about their performance)
+2. Range of Motion Analysis (comment on their flexibility and control)
+3. Performance Level (based on reps completed)
+4. Clinical Recommendations (3-4 specific recommendations for improvement)
+5. Safety Notes (if any concerns detected)
+
+Use professional medical language but keep it understandable. Include specific numbers from the data. Format with <strong> tags for headers.`;
+
+            try {
+                // Use backend proxy to avoid CORS issues
+                const response = await fetch('http://localhost:8001/generate-report', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        messages: [
+                            { role: 'system', content: 'You are a professional physical therapist. Provide concise, professional medical assessments.' },
+                            { role: 'user', content: prompt }
+                        ]
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    return data.choices[0].message.content;
                 } else {
-                    updateStatus("No pose detected. Please center yourself in frame.", "warning");
+                    const errorData = await response.json();
+                    console.error('API error:', errorData);
+                    throw new Error(errorData.error?.message || 'API request failed');
                 }
-
-                requestAnimationFrame(detectPose);
+            } catch (error) {
+                console.error('AI Report error:', error);
             }
+            
+            // Fallback if AI fails
+            return generateFallbackReport(reps, duration, rangeOfMotion, repsPerMin);
+        }
 
-            function updateRepCount(avgKnee) {
-                const flexed = avgKnee < 140;
-                const extended = avgKnee > 165;
-
-                if (!previousAngles) {
-                    previousAngles = { phase: "up", reps: 0 };
-                }
-
-                if (previousAngles.phase === "up" && flexed) {
-                    previousAngles.phase = "down";
-                } else if (previousAngles.phase === "down" && extended) {
-                    previousAngles.phase = "up";
-                    previousAngles.reps += 1;
-                    repCount = previousAngles.reps;
-                }
+        function generateFallbackReport(reps, duration, rangeOfMotion, repsPerMin) {
+            let performanceLevel = 'Beginner';
+            let assessment = 'Continue with consistent practice to build strength and endurance.';
+            
+            if (reps >= 15) {
+                performanceLevel = 'Advanced';
+                assessment = 'Excellent performance with strong muscle control and endurance demonstrated.';
+            } else if (reps >= 10) {
+                performanceLevel = 'Intermediate';
+                assessment = 'Good effort with solid execution. Continue building strength through regular practice.';
+            } else if (reps >= 5) {
+                performanceLevel = 'Beginner';
+                assessment = 'Good start. Focus on smooth, controlled movements and gradually increase repetitions.';
             }
+            
+            return `
+                <strong>Physical Therapy Assessment Report</strong>
+                <br><br>
+                <strong>Patient Performance Summary:</strong>
+                <br>${assessment}
+                <br><br>
+                <strong>Range of Motion Analysis:</strong>
+                <br>• Knee Extension Range: ${rangeOfMotion}° (Normal range: 120-160°)
+                <br>• Movement Control: ${reps > 8 ? 'Good' : 'Developing'}
+                <br>• Motion Quality: Steady pace at ${repsPerMin} reps/minute
+                <br><br>
+                <strong>Performance Level:</strong>
+                <br>• Category: ${performanceLevel}
+                <br>• Reps Completed: ${reps}
+                <br>• Session Duration: ${duration} seconds
+                <br><br>
+                <strong>Clinical Recommendations:</strong>
+                <br>• Maintain steady, controlled movement throughout each repetition
+                <br>• Focus on full knee extension when standing position is reached
+                <br>• Control the descent gradually when sitting down
+                <br>• Practice ${reps > 10 ? '3-4 times per week' : 'daily with short sessions'} for optimal results
+                <br><br>
+                <strong>Safety Notes:</strong>
+                <br>• Stop if you experience pain or discomfort
+                <br>• Maintain proper posture throughout the exercise
+                <br>• Consult your physician before increasing intensity
+            `;
+        }
 
-            function drawPose(landmarks) {
-                const ctx = canvasElement.getContext('2d');
-                const rect = videoElement.getBoundingClientRect();
-                canvasElement.width = rect.width;
-                canvasElement.height = rect.height;
-                ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-
-                ctx.strokeStyle = 'rgba(59, 130, 246, 0.8)';
-                ctx.lineWidth = 3;
-                const connections = [
-                    [11, 12], [11, 13], [13, 15], [12, 14], [14, 16],
-                    [11, 23], [12, 24], [23, 24], [23, 25], [25, 27],
-                    [24, 26], [26, 28]
-                ];
-
-                connections.forEach(([a, b]) => {
-                    const p1 = landmarks[a];
-                    const p2 = landmarks[b];
-                    ctx.beginPath();
-                    ctx.moveTo(p1.x * canvasElement.width, p1.y * canvasElement.height);
-                    ctx.lineTo(p2.x * canvasElement.width, p2.y * canvasElement.height);
-                    ctx.stroke();
-                });
-
-                ctx.fillStyle = 'rgba(16, 185, 129, 0.8)';
-                landmarks.forEach(point => {
-                    ctx.beginPath();
-                    ctx.arc(point.x * canvasElement.width, point.y * canvasElement.height, 4, 0, 2 * Math.PI);
-                    ctx.fill();
-                });
-            }
-
-            async function startExercise() {
-                if (!mediaStream) {
-                    updateStatus("Starting camera...", "warning");
-                    await setupCamera();
-                }
-
-                if (awaitingUserGesture) {
-                    const playable = await ensureCameraPlaying();
-                    if (!playable) return;
-                }
-
-                if (!videoReady) {
-                    updateFeedback("Tap the video area or allow camera access to begin.");
-                    return;
-                }
-
-                if (currentConfidence < CONFIDENCE_GATE) {
-                    updateFeedback("⚠ Low visibility. Please improve lighting and try again.");
-                    return;
-                }
-
-                isRecording = true;
-                startTime = Date.now();
-                frameCount = 0;
-                repCount = 0;
-                previousAngles = null;
-
-                document.getElementById('sitStandStartBtn').disabled = true;
-                document.getElementById('sitStandStopBtn').disabled = false;
-                document.getElementById('recordingIndicator').classList.add('active');
-
-                updateStatus("Recording started. Perform slow, controlled movements.", "good");
-                updateFeedback("Start your sit-to-stand motion. Move slowly and steadily.");
+        function showExerciseReport(duration) {
+            document.getElementById('feedbackText').innerHTML = '<strong>Generating AI Report...</strong><br><br>Analyzing your performance...';
+            
+            generateAIReport(duration).then(aiReport => {
+                document.getElementById('feedbackText').innerHTML = aiReport;
                 
-                // Start the detection loop
-                detectPose();
-            }
-
-            function stopExercise() {
-                isRecording = false;
-                document.getElementById('sitStandStartBtn').disabled = false;
-                document.getElementById('sitStandStopBtn').disabled = true;
-                document.getElementById('recordingIndicator').classList.remove('active');
-
-                const duration = Math.round((Date.now() - startTime) / 1000);
-                updateStatus(`Recording stopped. Completed ${repCount} reps in ${duration} seconds.`, "good");
-                updateFeedback(`✓ Great job! You completed ${repCount} repetitions. Great form and controlled movement!`);
-            }
-
-            function bindControls() {
-                const startBtn = document.getElementById('sitStandStartBtn');
-                const stopBtn = document.getElementById('sitStandStopBtn');
-                const backBtn = document.getElementById('sitStandBackBtn');
-
-                startBtn?.addEventListener('click', startExercise);
-                stopBtn?.addEventListener('click', stopExercise);
-                backBtn?.addEventListener('click', () => window.history.back());
-            }
-
-            window.addEventListener('load', () => {
-                cacheElements();
-                bindControls();
-                init();
+                // Add download button
+                const downloadBtn = document.createElement('button');
+                downloadBtn.textContent = '📥 Download Report';
+                downloadBtn.style.cssText = 'background: #2d9e5f; color: white; padding: 10px 15px; border: none; border-radius: 6px; cursor: pointer; margin-top: 15px; font-weight: 600;';
+                downloadBtn.onclick = downloadExerciseData;
+                
+                const feedbackBox = document.getElementById('feedbackBox');
+                const existingBtn = feedbackBox.querySelector('button');
+                if (existingBtn) existingBtn.remove();
+                feedbackBox.appendChild(downloadBtn);
             });
-        })();
+        }
+
+        function downloadExerciseData() {
+            const duration = Math.round((Date.now() - startTime) / 1000);
+            const data = {
+                timestamp: new Date().toISOString(),
+                exercise: 'Sit-to-Stand',
+                reps: repCount,
+                duration: duration + 's',
+                maxKneeAngle: Math.round(maxKneeAngle),
+                minKneeAngle: Math.round(minKneeAngle),
+                rangeOfMotion: Math.round(maxKneeAngle - minKneeAngle) + '°',
+                pace: duration > 0 ? Math.round((repCount / duration) * 60) + ' reps/min' : '0 reps/min'
+            };
+            
+            const csvContent = Object.entries(data).map(([key, value]) => `${key},${value}`).join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `sit-stand-report-${Date.now()}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        }
+
+        function detectPose() {
+            if (!isDetecting || !poseDetector || !videoReady) return;
+
+            const result = poseDetector.detectForVideo(videoElement, performance.now());
+
+            canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+
+            if (result.landmarks && result.landmarks[0]) {
+                const landmarks = result.landmarks[0];
+
+                const leftKnee = calcAngle(landmarks[23], landmarks[25], landmarks[27]);
+                const rightKnee = calcAngle(landmarks[24], landmarks[26], landmarks[28]);
+                const avgKnee = (leftKnee + rightKnee) / 2;
+                const asymmetry = Math.abs(leftKnee - rightKnee);
+
+                document.getElementById('lKnee').textContent = leftKnee + '°';
+                document.getElementById('rKnee').textContent = rightKnee + '°';
+
+                // Track max and min angles for report
+                if (avgKnee > maxKneeAngle) maxKneeAngle = avgKnee;
+                if (avgKnee < minKneeAngle) minKneeAngle = avgKnee;
+
+                // Rep counting: sitting < 100°, standing > 140°
+                const isSitting = avgKnee < 100;
+                const isStanding = avgKnee > 140;
+                
+                // State machine: only count when transitioning from sitting to standing
+                if (isStanding && previousState === 'sitting') {
+                    const now = Date.now();
+                    // Debounce: only count if at least 1 second has passed since last rep
+                    if (now - lastRepTime > 1000) {
+                        repCount++;
+                        lastRepTime = now;
+                        document.getElementById('repsCount').textContent = repCount;
+                    }
+                }
+                
+                // Update state
+                if (isSitting) {
+                    previousState = 'sitting';
+                } else if (isStanding) {
+                    previousState = 'standing';
+                }
+
+                const elapsed = Math.round((Date.now() - startTime) / 1000);
+                document.getElementById('duration').textContent = elapsed + 's';
+
+                // Update live feedback
+                updateLiveFeedback(avgKnee, asymmetry);
+
+                drawSkeleton(landmarks);
+            }
+
+            requestAnimationFrame(detectPose);
+        }
+
+        function drawSkeleton(landmarks) {
+            const w = canvasElement.width;
+            const h = canvasElement.height;
+
+            canvasCtx.strokeStyle = 'rgba(45, 158, 95, 0.8)';
+            canvasCtx.lineWidth = 3;
+
+            const connections = [
+                [11, 12], [11, 13], [13, 15], [12, 14], [14, 16],
+                [11, 23], [12, 24], [23, 24], [23, 25], [25, 27],
+                [24, 26], [26, 28]
+            ];
+
+            connections.forEach(([a, b]) => {
+                const lm1 = landmarks[a];
+                const lm2 = landmarks[b];
+                if (lm1.visibility > 0.3 && lm2.visibility > 0.3) {
+                    canvasCtx.beginPath();
+                    canvasCtx.moveTo(lm1.x * w, lm1.y * h);
+                    canvasCtx.lineTo(lm2.x * w, lm2.y * h);
+                    canvasCtx.stroke();
+                }
+            });
+
+            canvasCtx.fillStyle = 'rgba(45, 158, 95, 0.8)';
+            landmarks.forEach(lm => {
+                if (lm.visibility > 0.3) {
+                    canvasCtx.beginPath();
+                    canvasCtx.arc(lm.x * w, lm.y * h, 4, 0, 2 * Math.PI);
+                    canvasCtx.fill();
+                }
+            });
+        }
+
+        function calcAngle(a, b, c) {
+            const ba = { x: a.x - b.x, y: a.y - b.y, z: (a.z || 0) - (b.z || 0) };
+            const bc = { x: c.x - b.x, y: c.y - b.y, z: (c.z || 0) - (b.z || 0) };
+            const dot = ba.x * bc.x + ba.y * bc.y + ba.z * bc.z;
+            const magA = Math.sqrt(ba.x * ba.x + ba.y * ba.y + ba.z * ba.z);
+            const magB = Math.sqrt(bc.x * bc.x + bc.y * bc.y + bc.z * bc.z);
+            const cosA = dot / (magA * magB);
+            const angle = Math.acos(Math.max(-1, Math.min(1, cosA))) * (180 / Math.PI);
+            return Math.round(angle);
+        }
+
+        window.addEventListener('load', async () => {
+            videoElement = document.getElementById('sitStandVideo');
+            canvasElement = document.getElementById('sitStandCanvas');
+            canvasCtx = canvasElement.getContext('2d');
+
+            const startBtn = document.getElementById('sitStandStartBtn');
+            const stopBtn = document.getElementById('sitStandStopBtn');
+            const backBtn = document.getElementById('sitStandBackBtn');
+
+            startBtn.addEventListener('click', () => {
+                if (!mediaStream) {
+                    startCamera().then(startRecording);
+                } else {
+                    startRecording();
+                }
+            });
+            stopBtn.addEventListener('click', stopRecording);
+            backBtn.addEventListener('click', () => window.history.back());
+
+            canvasElement.width = videoElement.offsetWidth;
+            canvasElement.height = videoElement.offsetHeight;
+
+            await initMediaPipe();
+            await startCamera();
+        });
+
+        window.addEventListener('resize', () => {
+            if (videoElement && canvasElement) {
+                canvasElement.width = videoElement.offsetWidth;
+                canvasElement.height = videoElement.offsetHeight;
+            }
+        });
     </script>
 </body>
 </html>
