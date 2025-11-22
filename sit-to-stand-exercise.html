@@ -615,6 +615,10 @@
             }
 
             async function detectPose() {
+                if (!isRecording) {
+                    return;
+                }
+
                 if (!landmarker || !videoReady || videoElement.readyState !== videoElement.HAVE_ENOUGH_DATA) {
                     requestAnimationFrame(detectPose);
                     return;
@@ -657,18 +661,18 @@
                             updateFeedback("Good form. Keep moving steadily and maintain balance.");
                         }
 
-                        if (isRecording) {
-                            frameCount++;
-                            updateRepCount(avgKnee);
-                            document.getElementById('duration').textContent = Math.round((Date.now() - startTime) / 1000) + 's';
-                            document.getElementById('repsCount').textContent = repCount;
-                        }
+                        frameCount++;
+                        updateRepCount(avgKnee);
+                        document.getElementById('duration').textContent = Math.round((Date.now() - startTime) / 1000) + 's';
+                        document.getElementById('repsCount').textContent = repCount;
 
                         drawPose(landmarks);
-                        updateStatus("Detecting motion...", "good");
+                        updateStatus("Tracking motion - " + repCount + " reps", "good");
                     } else {
                         updateStatus("Low visibility. Improve lighting or step back.", "warning");
                     }
+                } else {
+                    updateStatus("No pose detected. Please center yourself in frame.", "warning");
                 }
 
                 requestAnimationFrame(detectPose);
@@ -756,6 +760,9 @@
 
                 updateStatus("Recording started. Perform slow, controlled movements.", "good");
                 updateFeedback("Start your sit-to-stand motion. Move slowly and steadily.");
+                
+                // Start the detection loop
+                detectPose();
             }
 
             function stopExercise() {
