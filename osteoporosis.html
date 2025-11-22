@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Osteoporosis Exercises - Heal Motion AI</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .recovery-hero {
+            background: #2d9e5f;
+            color: white;
+            padding: 140px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .recovery-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 400px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+            transform: translate(150px, -100px);
+        }
+
+        .recovery-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .recovery-content h2 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            line-height: 1.2;
+            letter-spacing: -0.5px;
+        }
+
+        .recovery-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 4rem;
+            font-weight: 400;
+            opacity: 0.95;
+        }
+
+        .exercise-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 45px;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .exercise-button {
+            background: white;
+            color: #333;
+            padding: 60px 40px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            border: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            min-height: 340px;
+            font-family: inherit;
+            position: relative;
+        }
+
+        .exercise-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #2d9e5f;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .exercise-button:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .exercise-icon {
+            font-size: 5rem;
+            color: #2d9e5f;
+            transition: all 0.3s;
+        }
+
+        .exercise-button h3 {
+            font-size: 1.8rem;
+            margin: 0;
+            font-weight: 600;
+            color: #2d9e5f;
+        }
+
+        .exercise-description {
+            font-size: 0.95rem;
+            color: #666;
+            font-weight: 400;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .coming-soon {
+            display: none;
+        }
+
+        .back-button-container {
+            position: relative;
+            z-index: 2;
+            margin-bottom: 2rem;
+        }
+
+        .back-button {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 10px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-4px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="top-bar-left">
+            <a href="#">News & Contact</a>
+            <a href="#">Translate</a>
+        </div>
+        <div class="search-bar">
+            <input type="text" placeholder="Search...">
+            <button><i class="fas fa-search"></i></button>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo-section">
+                <div class="logo-container">
+                    <svg class="heartbeat-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                        <polyline points="30,50 35,50 38,40 42,60 45,50 50,50 55,50 58,40 62,60 65,50 70,50" 
+                                  fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <div class="logo-text">
+                        <h1 class="logo">Heal Motion AI</h1>
+                        <p class="logo-tagline">Recovery Support</p>
+                    </div>
+                </div>
+            </div>
+            <nav class="nav">
+                <a href="index.html">Home</a>
+                <a href="index.html#how-it-works">How it works</a>
+                <a href="index.html#providers">Providers</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Recovery Motion Selection Section -->
+    <section class="recovery-hero">
+        <div class="recovery-content">
+            <div class="back-button-container">
+                <button class="back-button" onclick="window.location.href='conditions.html'">
+                    <i class="fas fa-arrow-left"></i> Back to Conditions
+                </button>
+            </div>
+            <h2>Osteoporosis</h2>
+            <p class="recovery-subtitle">Choose your exercise type to begin your personalized motion guidance</p>
+            
+            <div class="exercise-grid">
+                <button class="exercise-button" onclick="window.location.href='coming-soon.html'">
+                    <div class="coming-soon">Coming Soon</div>
+                    <div class="exercise-icon">
+                        <i class="fas fa-dumbbell"></i>
+                    </div>
+                    <h3>Weight Bearing</h3>
+                    <p class="exercise-description">Build bone strength safely</p>
+                </button>
+
+                <button class="exercise-button" onclick="window.location.href='coming-soon.html'">
+                    <div class="coming-soon">Coming Soon</div>
+                    <div class="exercise-icon">
+                        <i class="fas fa-person-hiking"></i>
+                    </div>
+                    <h3>Balance Training</h3>
+                    <p class="exercise-description">Prevent falls and improve stability</p>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- City Graphic -->
+    <div class="city-graphic">
+        <div class="city-skyline">
+            <div class="cloud small"></div>
+            <div class="building size1">
+                <div class="window small"></div>
+                <div class="window small"></div>
+                <div class="window small"></div>
+                <div class="window small"></div>
+            </div>
+            <div class="building size3">
+                <div class="window medium"></div>
+                <div class="window medium"></div>
+                <div class="window medium"></div>
+                <div class="window medium"></div>
+                <div class="window medium"></div>
+                <div class="window medium"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div>
+                <div class="footer-logo">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                        <polyline points="30,50 35,50 38,40 42,60 45,50 50,50 55,50 58,40 62,60 65,50 70,50" 
+                                  fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <div class="footer-logo-text">
+                        <h3>Heal Motion AI</h3>
+                        <p>Recovery Support</p>
+                    </div>
+                </div>
+                <p style="margin-top: 15px; font-size: 0.95rem; line-height: 1.6;">Providing expert-level rehabilitation support 24/7, powered by artificial intelligence and guided by real healthcare professionals.</p>
+            </div>
+            <div class="footer-contact">
+                <p>Contact Us</p>
+                <a href="tel:+14165551234">+1 (416) 555-1234</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Heal Motion AI. All rights reserved. Revolutionizing recovery, one step at a time.</p>
+        </div>
+    </footer>
+</body>
+</html>
