@@ -17,3 +17,5 @@ videos/
 *.mp4
 *.mov
 *.avi
+# Ignore duplicate sit-to-stand-ai folder in my-react-router-app
+my-react-router-app/sit-to-stand-ai/
