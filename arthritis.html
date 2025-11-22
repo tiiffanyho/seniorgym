@@ -3,9 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Select Your Condition - Heal Motion AI</title>
+    <title>Arthritis Exercises - Heal Motion AI</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .arthritis-hero {
+            background: linear-gradient(135deg, #2d9e5f 0%, #45b373 100%);
+            color: white;
+            padding: 140px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .arthritis-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 400px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+            transform: translate(150px, -100px);
+        }
+
+        .arthritis-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .arthritis-content h2 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            line-height: 1.2;
+            letter-spacing: -0.5px;
+        }
+
+        .arthritis-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 4rem;
+            font-weight: 400;
+            opacity: 0.95;
+        }
+
+        .motion-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 45px;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .motion-button {
+            background: white;
+            color: #333;
+            padding: 60px 40px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            border: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            min-height: 340px;
+            font-family: inherit;
+            position: relative;
+        }
+
+        .motion-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ffd60a 0%, #ffed4e 100%);
+            border-radius: 12px 12px 0 0;
+        }
+
+        .motion-button:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+            background: #f9f9f9;
+        }
+
+        .motion-icon {
+            font-size: 5rem;
+            color: #2d9e5f;
+            transition: all 0.3s;
+        }
+
+        .motion-button:hover .motion-icon {
+            transform: scale(1.15);
+            color: #45b373;
+        }
+
+        .motion-button h3 {
+            font-size: 1.8rem;
+            margin: 0;
+            font-weight: 600;
+            color: #2d9e5f;
+        }
+
+        .motion-description {
+            font-size: 0.95rem;
+            color: #666;
+            font-weight: 400;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .back-button-container {
+            position: relative;
+            z-index: 2;
+            margin-bottom: 2rem;
+        }
+
+        .back-button {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 10px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-4px);
+        }
+    </style>
 </head>
 <body>
     <!-- Top Bar -->
@@ -44,65 +185,32 @@
         </div>
     </header>
 
-    <!-- Conditions Section -->
-    <section class="conditions-hero">
-        <div class="hero-content">
-            <h2>Select Your Recovery Path</h2>
-            <p class="conditions-subtitle">Choose the condition you need support with, and we'll tailor your personalized recovery plan</p>
+    <!-- Arthritis Motion Selection Section -->
+    <section class="arthritis-hero">
+        <div class="arthritis-content">
+            <div class="back-button-container">
+                <button class="back-button" onclick="window.location.href='conditions.html'">
+                    <i class="fas fa-arrow-left"></i> Back to Conditions
+                </button>
+            </div>
+            <h2>Arthritis Recovery</h2>
+            <p class="arthritis-subtitle">Choose your exercise type to begin your personalized motion guidance</p>
             
-            <div class="conditions-grid-large">
-                <button class="condition-button" onclick="window.location.href='arthritis.html'">
-                    <div class="condition-button-icon">
-                        <i class="fas fa-bone"></i>
+            <div class="motion-grid">
+                <button class="motion-button" onclick="goToMotion('hand-motion')">
+                    <div class="motion-icon">
+                        <i class="fas fa-hand-paper"></i>
                     </div>
-                    <h4>Arthritis</h4>
-                    <div class="condition-problem">Joint pain and stiffness</div>
-                    <div class="condition-solution">Hand movements & sit-to-stand exercises to improve mobility</div>
+                    <h3>Do Hand Motion</h3>
+                    <p class="motion-description">Improve hand flexibility and reduce joint stiffness with guided hand exercises</p>
                 </button>
 
-                <button class="condition-button" onclick="goToExercise('stroke')">
-                    <div class="condition-button-icon">
-                        <i class="fas fa-brain"></i>
+                <button class="motion-button" onclick="goToMotion('sit-stand')">
+                    <div class="motion-icon">
+                        <i class="fas fa-person"></i>
                     </div>
-                    <h4>Stroke Recovery</h4>
-                    <div class="condition-problem">Weakness & facial paralysis</div>
-                    <div class="condition-solution">Face movements & coordination exercises for strength</div>
-                </button>
-
-                <button class="condition-button" onclick="goToExercise('osteoporosis')">
-                    <div class="condition-button-icon">
-                        <i class="fas fa-spine"></i>
-                    </div>
-                    <h4>Osteoporosis</h4>
-                    <div class="condition-problem">Weak bones & fracture risk</div>
-                    <div class="condition-solution">Weight-bearing & balance exercises to strengthen bones</div>
-                </button>
-
-                <button class="condition-button" onclick="goToExercise('dementia')">
-                    <div class="condition-button-icon">
-                        <i class="fas fa-head-side-virus"></i>
-                    </div>
-                    <h4>Dementia</h4>
-                    <div class="condition-problem">Memory loss & reduced activity</div>
-                    <div class="condition-solution">Cognitive games & gentle movements for mental engagement</div>
-                </button>
-
-                <button class="condition-button" onclick="goToExercise('hypertension')">
-                    <div class="condition-button-icon">
-                        <i class="fas fa-heart"></i>
-                    </div>
-                    <h4>Hypertension</h4>
-                    <div class="condition-problem">High blood pressure & stress</div>
-                    <div class="condition-solution">Calming cardio & breathing exercises to manage pressure</div>
-                </button>
-
-                <button class="condition-button" onclick="goToExercise('sarcopenia')">
-                    <div class="condition-button-icon">
-                        <i class="fas fa-dumbbell"></i>
-                    </div>
-                    <h4>Sarcopenia</h4>
-                    <div class="condition-problem">Muscle loss & weakness</div>
-                    <div class="condition-solution">Resistance training & functional movements to build strength</div>
+                    <h3>Do Sit or Stand</h3>
+                    <p class="motion-description">Build leg strength and practice safe transitions with sit-to-stand exercises</p>
                 </button>
             </div>
         </div>
@@ -233,25 +341,21 @@
     </footer>
 
 <script>
-    function goToExercise(condition) {
-        console.log('Going to exercise for:', condition);
+    function goToMotion(motion) {
+        console.log('Going to motion:', motion);
         
         const paths = {
-            'arthritis': 'http://localhost:8000/seniorgym/sit-to-stand-ai/index.html',
-            'stroke': 'http://localhost:8000/seniorgym/facial-exercises-ai/index.html',
-            'osteoporosis': 'http://localhost:8000/seniorgym/balance-training-ai/index.html',
-            'dementia': 'http://localhost:8000/seniorgym/cognitive-games-ai/index.html',
-            'hypertension': 'http://localhost:8000/seniorgym/cardio-exercises-ai/index.html',
-            'sarcopenia': 'http://localhost:8000/seniorgym/resistance-training-ai/index.html'
+            'hand-motion': 'http://localhost:8000/seniorgym/sit-to-stand-ai/index.html',
+            'sit-stand': 'http://localhost:8000/seniorgym/sit-to-stand-ai/index.html'
         };
         
-        const path = paths[condition];
+        const path = paths[motion];
         console.log('Attempting to navigate to:', path);
         
         if (path) {
             window.location.href = path;
         } else {
-            console.error('No path found for condition:', condition);
+            console.error('No path found for motion:', motion);
             alert('Exercise not found');
         }
     }
