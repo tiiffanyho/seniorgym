@@ -7,105 +7,23 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Garamond:wght@400;500&display=swap" rel="stylesheet">
-    <style>
-        /* Conditions List Layout */
-        .conditions-list {
-            max-width: 800px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .condition-item {
-            background: white;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s;
-            cursor: pointer;
-            border: 2px solid transparent;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .condition-item:hover {
-            transform: translateX(5px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-            border-color: #6b46c1;
-        }
-
-        .condition-item.active {
-            background: #6b46c1;
-            color: white;
-            border-color: #6b46c1;
-        }
-
-        .condition-item.active .condition-icon {
-            color: white;
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .condition-item.active h4,
-        .condition-item.active p {
-            color: white;
-        }
-
-        .condition-item.active .condition-check {
-            color: white;
-            display: flex;
-        }
-
-        .condition-left {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .condition-icon {
-            font-size: 2.5rem;
-            color: #6b46c1;
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #f3e8ff;
-            border-radius: 8px;
-            transition: all 0.3s;
-        }
-
-        .condition-text h4 {
-            font-size: 1.2rem;
-            margin-bottom: 5px;
-            color: #2c3e50;
-            font-weight: 400;
-        }
-
-        .condition-text p {
-            color: #555;
-            font-size: 0.9rem;
-            font-weight: 400;
-        }
-
-        .condition-check {
-            font-size: 1.5rem;
-            color: #ddd;
-            display: none;
-        }
-    </style>
 </head>
 <body>
     <!-- Header -->
     <header class="header">
         <div class="container">
             <div class="logo-section">
-                <svg class="heartbeat-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                    <polyline points="10,50 20,50 25,35 30,65 35,45 45,50 50,50 55,50 60,35 65,65 70,45 80,50 90,50" 
-                              fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <h1 class="logo">Heal Motion AI</h1>
+                <div class="logo-container">
+                    <svg class="heartbeat-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" stroke-width="2"/>
+                        <polyline points="30,50 35,50 38,40 42,60 45,50 50,50 55,50 58,40 62,60 65,50 70,50" 
+                                  fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <div class="logo-text">
+                        <h1 class="logo">Heal Motion AI</h1>
+                        <p class="logo-tagline">Recovery Support</p>
+                    </div>
+                </div>
             </div>
             <nav class="nav">
                 <a href="index.html">Home</a>
@@ -116,101 +34,65 @@
     </header>
 
     <!-- Conditions Section -->
-    <section class="conditions">
-        <div class="container">
-            <h3>Select Your Condition</h3>
-            <p class="conditions-subtitle">Choose the condition you need support with, and we'll tailor your recovery plan</p>
+    <section class="conditions-hero">
+        <div class="hero-content">
+            <h2>Select Your Recovery Path</h2>
+            <p class="conditions-subtitle">Choose the condition you need support with, and we'll tailor your personalized recovery plan</p>
             
-            <div class="conditions-list">
-                <div class="condition-item" data-condition="arthritis">
-                    <div class="condition-left">
-                        <div class="condition-icon">
-                            <i class="fas fa-bone"></i>
-                        </div>
-                        <div class="condition-text">
-                            <h4>Arthritis</h4>
-                            <p>Joint pain and mobility exercises</p>
-                        </div>
+            <div class="conditions-grid-large">
+                <button class="condition-button" data-condition="arthritis">
+                    <div class="condition-button-icon">
+                        <i class="fas fa-bone"></i>
                     </div>
-                    <div class="condition-check">
-                        <i class="fas fa-check"></i>
-                    </div>
-                </div>
+                    <h4>Arthritis</h4>
+                    <div class="condition-problem">Joint pain and stiffness</div>
+                    <div class="condition-solution">Hand movements & sit-to-stand exercises to improve mobility</div>
+                </button>
 
-                <div class="condition-item" data-condition="stroke">
-                    <div class="condition-left">
-                        <div class="condition-icon">
-                            <i class="fas fa-brain"></i>
-                        </div>
-                        <div class="condition-text">
-                            <h4>Stroke Recovery</h4>
-                            <p>Mobility and strength rehabilitation</p>
-                        </div>
+                <button class="condition-button" data-condition="stroke">
+                    <div class="condition-button-icon">
+                        <i class="fas fa-brain"></i>
                     </div>
-                    <div class="condition-check">
-                        <i class="fas fa-check"></i>
-                    </div>
-                </div>
+                    <h4>Stroke Recovery</h4>
+                    <div class="condition-problem">Weakness & facial paralysis</div>
+                    <div class="condition-solution">Face movements & coordination exercises for strength</div>
+                </button>
 
-                <div class="condition-item" data-condition="osteoporosis">
-                    <div class="condition-left">
-                        <div class="condition-icon">
-                            <i class="fas fa-spine"></i>
-                        </div>
-                        <div class="condition-text">
-                            <h4>Osteoporosis</h4>
-                            <p>Bone strengthening exercises</p>
-                        </div>
+                <button class="condition-button" data-condition="osteoporosis">
+                    <div class="condition-button-icon">
+                        <i class="fas fa-spine"></i>
                     </div>
-                    <div class="condition-check">
-                        <i class="fas fa-check"></i>
-                    </div>
-                </div>
+                    <h4>Osteoporosis</h4>
+                    <div class="condition-problem">Weak bones & fracture risk</div>
+                    <div class="condition-solution">Weight-bearing & balance exercises to strengthen bones</div>
+                </button>
 
-                <div class="condition-item" data-condition="dementia">
-                    <div class="condition-left">
-                        <div class="condition-icon">
-                            <i class="fas fa-head-side-virus"></i>
-                        </div>
-                        <div class="condition-text">
-                            <h4>Dementia</h4>
-                            <p>Cognitive and physical engagement</p>
-                        </div>
+                <button class="condition-button" data-condition="dementia">
+                    <div class="condition-button-icon">
+                        <i class="fas fa-head-side-virus"></i>
                     </div>
-                    <div class="condition-check">
-                        <i class="fas fa-check"></i>
-                    </div>
-                </div>
+                    <h4>Dementia</h4>
+                    <div class="condition-problem">Memory loss & reduced activity</div>
+                    <div class="condition-solution">Cognitive games & gentle movements for mental engagement</div>
+                </button>
 
-                <div class="condition-item" data-condition="hypertension">
-                    <div class="condition-left">
-                        <div class="condition-icon">
-                            <i class="fas fa-heart"></i>
-                        </div>
-                        <div class="condition-text">
-                            <h4>Hypertension</h4>
-                            <p>Cardiovascular health management</p>
-                        </div>
+                <button class="condition-button" data-condition="hypertension">
+                    <div class="condition-button-icon">
+                        <i class="fas fa-heart"></i>
                     </div>
-                    <div class="condition-check">
-                        <i class="fas fa-check"></i>
-                    </div>
-                </div>
+                    <h4>Hypertension</h4>
+                    <div class="condition-problem">High blood pressure & stress</div>
+                    <div class="condition-solution">Calming cardio & breathing exercises to manage pressure</div>
+                </button>
 
-                <div class="condition-item" data-condition="sarcopenia">
-                    <div class="condition-left">
-                        <div class="condition-icon">
-                            <i class="fas fa-dumbbell"></i>
-                        </div>
-                        <div class="condition-text">
-                            <h4>Sarcopenia</h4>
-                            <p>Muscle building and strength training</p>
-                        </div>
+                <button class="condition-button" data-condition="sarcopenia">
+                    <div class="condition-button-icon">
+                        <i class="fas fa-dumbbell"></i>
                     </div>
-                    <div class="condition-check">
-                        <i class="fas fa-check"></i>
-                    </div>
-                </div>
+                    <h4>Sarcopenia</h4>
+                    <div class="condition-problem">Muscle loss & weakness</div>
+                    <div class="condition-solution">Resistance training & functional movements to build strength</div>
+                </button>
             </div>
         </div>
     </section>

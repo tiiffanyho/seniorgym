@@ -6,18 +6,35 @@
     <title>Heal Motion AI - Personal AI Rehab Support</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Garamond:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="top-bar-left">
+            <a href="#">News & Contact</a>
+            <a href="#">Translate</a>
+        </div>
+        <div class="search-bar">
+            <input type="text" placeholder="Search...">
+            <button><i class="fas fa-search"></i></button>
+        </div>
+    </div>
+
     <!-- Header -->
     <header class="header">
         <div class="container">
             <div class="logo-section">
-                <svg class="heartbeat-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                    <polyline points="10,50 20,50 25,35 30,65 35,45 45,50 50,50 55,50 60,35 65,65 70,45 80,50 90,50" 
-                              fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <h1 class="logo">Heal Motion AI</h1>
+                <div class="logo-container">
+                    <svg class="heartbeat-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                        <polyline points="30,50 35,50 38,40 42,60 45,50 50,50 55,50 58,40 62,60 65,50 70,50" 
+                                  fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <div class="logo-text">
+                        <h1 class="logo">Heal Motion AI</h1>
+                        <p class="logo-tagline">Recovery Support</p>
+                    </div>
+                </div>
             </div>
             <nav class="nav">
                 <a href="#home">Home</a>
@@ -45,104 +62,7 @@
                     <p>Seamless health reporting</p>
                 </div>
             </div>
-            <button class="continue-btn">Continue</button>
-        </div>
-    </section>
-
-    <!-- Conditions Section -->
-    <section class="conditions" id="conditions">
-        <h3>Select Your Condition</h3>
-        <p class="conditions-subtitle">Choose the condition you need support with, and we'll tailor your recovery plan</p>
-        <div class="conditions-list">
-            <div class="condition-item" data-condition="arthritis">
-                <div class="condition-left">
-                    <div class="condition-icon">
-                        <i class="fas fa-bone"></i>
-                    </div>
-                    <div class="condition-text">
-                        <h4>Arthritis</h4>
-                        <p>Joint pain and mobility exercises</p>
-                    </div>
-                </div>
-                <div class="condition-check">
-                    <i class="fas fa-check"></i>
-                </div>
-            </div>
-
-            <div class="condition-item" data-condition="stroke">
-                <div class="condition-left">
-                    <div class="condition-icon">
-                        <i class="fas fa-brain"></i>
-                    </div>
-                    <div class="condition-text">
-                        <h4>Stroke Recovery</h4>
-                        <p>Mobility and strength rehabilitation</p>
-                    </div>
-                </div>
-                <div class="condition-check">
-                    <i class="fas fa-check"></i>
-                </div>
-            </div>
-
-            <div class="condition-item" data-condition="osteoporosis">
-                <div class="condition-left">
-                    <div class="condition-icon">
-                        <i class="fas fa-spine"></i>
-                    </div>
-                    <div class="condition-text">
-                        <h4>Osteoporosis</h4>
-                        <p>Bone strengthening exercises</p>
-                    </div>
-                </div>
-                <div class="condition-check">
-                    <i class="fas fa-check"></i>
-                </div>
-            </div>
-
-            <div class="condition-item" data-condition="dementia">
-                <div class="condition-left">
-                    <div class="condition-icon">
-                        <i class="fas fa-head-side-virus"></i>
-                    </div>
-                    <div class="condition-text">
-                        <h4>Dementia</h4>
-                        <p>Cognitive and physical engagement</p>
-                    </div>
-                </div>
-                <div class="condition-check">
-                    <i class="fas fa-check"></i>
-                </div>
-            </div>
-
-            <div class="condition-item" data-condition="hypertension">
-                <div class="condition-left">
-                    <div class="condition-icon">
-                        <i class="fas fa-heart"></i>
-                    </div>
-                    <div class="condition-text">
-                        <h4>Hypertension</h4>
-                        <p>Cardiovascular health management</p>
-                    </div>
-                </div>
-                <div class="condition-check">
-                    <i class="fas fa-check"></i>
-                </div>
-            </div>
-
-            <div class="condition-item" data-condition="sarcopenia">
-                <div class="condition-left">
-                    <div class="condition-icon">
-                        <i class="fas fa-dumbbell"></i>
-                    </div>
-                    <div class="condition-text">
-                        <h4>Sarcopenia</h4>
-                        <p>Muscle building and strength training</p>
-                    </div>
-                </div>
-                <div class="condition-check">
-                    <i class="fas fa-check"></i>
-                </div>
-            </div>
+            <button class="continue-btn">Click Here to Continue</button>
         </div>
     </section>
 
@@ -190,14 +110,14 @@
                 <p>Heal Motion AI bridges this gap by providing expert-level rehabilitation support 24/7, powered by artificial intelligence and guided by real healthcare professionals. We're committed to helping you regain independence and confidence in your own home.</p>
             </div>
             <div class="why-image">
-                <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=500&h=400&fit=crop" alt="Senior doing physical therapy">
+                <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop" alt="Senior doing physical therapy">
             </div>
         </div>
     </section>
 
     <!-- Partners Section -->
     <section class="partners" id="providers">
-        <h3>Trusted by Leading Healthcare Providers in London, Ontario</h3>
+        <h3>Trusted by Leading Healthcare Providers</h3>
         <div class="partners-grid">
             <div class="partner-logo">
                 <img src="https://www.lhsc.on.ca/sites/default/files/2021-10/LHSC%20Horizontal%20Logo%20-%20RGB.png" alt="London Health Sciences Centre Logo" class="hospital-logo">
@@ -218,9 +138,44 @@
         </div>
     </section>
 
+    <!-- City Graphic -->
+    <div class="city-graphic">
+        <div class="city-skyline">
+            <div class="cloud small"></div>
+            <div class="building small"></div>
+            <div class="building medium"></div>
+            <div class="building large"></div>
+            <div class="building medium"></div>
+            <div class="building small"></div>
+            <div class="cloud medium"></div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="footer">
-        <p>&copy; 2025 Heal Motion AI. Revolutionizing recovery, one step at a time.</p>
+        <div class="footer-content">
+            <div>
+                <div class="footer-logo">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                        <polyline points="30,50 35,50 38,40 42,60 45,50 50,50 55,50 58,40 62,60 65,50 70,50" 
+                                  fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <div class="footer-logo-text">
+                        <h3>Heal Motion AI</h3>
+                        <p>Recovery Support</p>
+                    </div>
+                </div>
+                <p style="margin-top: 15px; font-size: 0.95rem; line-height: 1.6;">Providing expert-level rehabilitation support 24/7, powered by artificial intelligence and guided by real healthcare professionals.</p>
+            </div>
+            <div class="footer-contact">
+                <p>Contact Us</p>
+                <a href="tel:+14165551234">+1 (416) 555-1234</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Heal Motion AI. All rights reserved. Revolutionizing recovery, one step at a time.</p>
+        </div>
     </footer>
 
     <script src="script.js"></script>
