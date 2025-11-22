@@ -1,5 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { FilesetResolver, PoseLandmarker as MediaPipePoseLandmarker } from "@mediapipe/tasks-vision";
+import { 
+  FilesetResolver, 
+  PoseLandmarker as MediaPipePoseLandmarker,
+  type PoseLandmarkerOptions 
+} from "@mediapipe/tasks-vision";
 
 type NormalizedLandmark = {
  x: number;
@@ -444,18 +448,31 @@ export function PoseCoach() {
  async function initCamera() {
  try {
  stream = await navigator.mediaDevices.getUserMedia({
- video: { width: 960, height: 540 },
+ video: { 
+ width: { ideal: 960 },
+ height: { ideal: 540 },
+ facingMode: 'user'
+ },
+ audio: false
  });
  if (videoRef.current) {
  videoRef.current.srcObject = stream;
- await videoRef.current.play();
+ videoRef.current.onloadedmetadata = () => {
+ videoRef.current?.play().catch(err => {
+ console.error('Video play error:', err);
+ setError("Failed to start video playback");
+ });
+ };
  setStatus("Camera ready. Stand ~2m back with full body visible.");
+ console.log('✅ Camera initialized successfully');
  }
  } catch (err) {
- console.error(err);
+ console.error('Camera access error:', err);
+ const errorMsg = err instanceof Error ? err.message : String(err);
  setError(
- "Camera access failed. Ensure permissions are granted and lighting is adequate.",
+ `Camera access failed: ${errorMsg}. Check browser permissions and try refreshing.`,
  );
+ setStatus("Camera error - check permissions");
  }
  }
  initCamera();
