@@ -456,6 +456,11 @@
             function cacheElements() {
                 videoElement = document.getElementById('sitStandVideo');
                 canvasElement = document.getElementById('sitStandCanvas');
+                if (videoElement) {
+                    videoElement.muted = true;
+                    videoElement.playsInline = true;
+                    videoElement.autoplay = true;
+                }
             }
 
             async function init() {
@@ -483,8 +488,12 @@
                 }
             }
 
+            function isStreamActive(stream) {
+                return !!stream && stream.getVideoTracks().some(track => track.readyState === "live");
+            }
+
             async function setupCamera() {
-                if (mediaStream) {
+                if (isStreamActive(mediaStream)) {
                     return;
                 }
 
@@ -536,6 +545,10 @@
             }
 
             async function ensureCameraPlaying() {
+                if (!isStreamActive(mediaStream)) {
+                    await setupCamera();
+                }
+
                 if (videoReady && !videoElement.paused) return true;
 
                 try {
@@ -697,9 +710,10 @@
 
             function drawPose(landmarks) {
                 const ctx = canvasElement.getContext('2d');
-                const rect = videoElement.getBoundingClientRect();
-                canvasElement.width = rect.width;
-                canvasElement.height = rect.height;
+                const width = videoElement.videoWidth || videoElement.clientWidth || 640;
+                const height = videoElement.videoHeight || videoElement.clientHeight || 480;
+                canvasElement.width = width;
+                canvasElement.height = height;
                 ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
 
                 ctx.strokeStyle = 'rgba(59, 130, 246, 0.8)';
@@ -728,15 +742,11 @@
             }
 
             async function startExercise() {
-                if (!mediaStream) {
-                    updateStatus("Starting camera...", "warning");
-                    await setupCamera();
-                }
+                updateStatus("Starting camera...", "warning");
+                await setupCamera();
 
-                if (awaitingUserGesture) {
-                    const playable = await ensureCameraPlaying();
-                    if (!playable) return;
-                }
+                const playable = await ensureCameraPlaying();
+                if (!playable) return;
 
                 if (!videoReady) {
                     updateFeedback("Tap the video area or allow camera access to begin.");
@@ -744,8 +754,7 @@
                 }
 
                 if (currentConfidence < CONFIDENCE_GATE) {
-                    updateFeedback("⚠ Low visibility. Please improve lighting and try again.");
-                    return;
+                    updateFeedback("⚠ Low visibility. Starting anyway—adjust lighting or step back for better tracking.");
                 }
 
                 isRecording = true;
