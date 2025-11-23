@@ -21,10 +21,13 @@ body {
 .top-bar {
     background: #f5faf8;
     padding: 12px 20px;
-    display: flex;
+    display: none;
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid #e0e0e0;
+    position: sticky;
+    top: 0;
+    z-index: 101;
 }
 
 .top-bar-left {
@@ -75,7 +78,7 @@ body {
     background: #ffffff;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     position: sticky;
-    top: 47px;
+    top: 0;
     z-index: 100;
     border-bottom: 3px solid #2d9e5f;
 }
@@ -291,7 +294,7 @@ body {
 .conditions-hero {
     background: linear-gradient(135deg, #f5faf8 0%, #e8f3ed 100%);
     color: #333;
-    padding: 120px 20px;
+    padding: 40px 20px;
     text-align: center;
 }
 
